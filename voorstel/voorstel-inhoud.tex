@@ -2,9 +2,11 @@
 
 \section{Introductie} % The \section*{} command stops section numbering
 \label{sec:introductie}
-Het correct én efficiënt verwerken van klantenaankopen is een cruciaal process binnen de retailsector. Om die reden investeert Colruyt Group momenteel in nieuwe touchscreens voor haar voornaamste kassasysteem, alsook een herwerking van de checkoutsoftware.
+Het correct én efficiënt verwerken van klantenaankopen is een cruciaal process binnen de retailsector. Om die reden investeert Colruyt Group momenteel in nieuwe touchscreens voor haar voornaamste kassasysteem, alsook een herwerking van de checkoutsoftware die deel uitmaakt van het systeem.
 
-Hoewel de ontwikkeling van deze software met rasse schreden vooruit gaat, werd er tot op heden maar weinig geïnvesteerd in (geautomatiseerde) e2e (end to end, oftewel een simulatie van een echt gebruikersscenario waarbij alle componenten van het systeem getest worden ~\cite{SoftwareTestingHelp2019}) testing. Nochtans is de stabiliteit van het kassasysteem een onbetwistbare noodzaak voor groep.
+Dit systeem wordt gebruikt worden binnen de filialen van de retailformules Colruyt (België, Luxemburg, en Frankrijk), OKay en OKay City, Bio-Planet, Dreamland en Dreambaby, alsook door de zelfstandige ondernemers van Spar.
+
+Hoewel de ontwikkeling van deze software met rasse schreden vooruit gaat, werd er tot op heden maar weinig geïnvesteerd in (geautomatiseerde) e2e\footnote{\textbf{End to end (e2e) testing} — Een techniek binnen software testing waarbij alle componenten van het systeem getest worden middels het simuleren van werkelijke geburikersscenario's ~\cite{SoftwareTestingHelp2019}.}. Nochtans is de stabiliteit van het kassasysteem een onbetwistbare noodzaak voor groep.
 
 Bovendien wordt de software continu uitgebreid met nieuwe functionaliteit en moet het probleemloos kunnen interfacen met een waslijst aan andere systemen (barcodelezers, weegschalen, betaalterminals, de systemen van stockbeheer, productinformatie, finance, customer relations, marketing \& promotie etc.).
 \vspace{\baselineskip}
@@ -23,7 +25,7 @@ De eerste stap voor het uitbouwen van een testsysteem is het kiezen van een gepa
 Het onderzoek dat onderwerp is van dit voorstel bestaat er dus uit om na te gaan:
 
 \begin{itemize}
-    \item welke e2e (end to end, d.w.z. testen die gebruik in een productie-omgeving simuleren) testing frameworks bestaan voor Angular en welke randvoorwaarden (kost, beschikbare ondersteuning en documentatie, vereiste programmeervaardigheden) zij hebben,
+    \item welke e2e testing frameworks bestaan voor Angular en welke randvoorwaarden (kost, beschikbare ondersteuning en documentatie, vereiste programmeervaardigheden) zij hebben,
     \item in welke mate de bestaande frameworks de volledige functionaliteit van het systeem kunnen afdekken,
     \item hoe performant elk van de frameworks is en
     \item hoe betrouwbaar de resultaten van de frameworks zijn
@@ -118,7 +120,7 @@ Naast een overzicht van de mogelijkheden en randvoorwaarden van elk testing fram
 \section{Verwachte conclusies}
 \label{sec:verwachte_conclusies}
 
-Zoals reeds eerder vermeldt, is het moeilijk om in te schatten welk framework uiteindelijk geadviseerd zal worden. De ontwikkelaars van het Checkoutsysteem lijkt in eerste instantie de voorkeur te geven aan het recentere Cypress, vooral omdat testen schrijven in dit framework intuïtiever en sneller zou zijn. In welke mate een framework aanvaard wordt is vaak de doorslaggevende factor om een bepaald framework te kiezen, en het lijkt dus aannemelijk dat Cypress uiteindelijk opgenomen wordt in het advies.
+Zoals reeds eerder vermeld, is het moeilijk om in te schatten welk framework uiteindelijk geadviseerd zal worden. De ontwikkelaars van het checkoutsysteem lijken in eerste instantie de voorkeur te geven aan het recentere Cypress, vooral omdat testen schrijven in dit framework intuïtiever en sneller zou zijn. In welke mate een framework aanvaard wordt is vaak de doorslaggevende factor om een bepaald framework te kiezen, en het lijkt dus aannemelijk dat Cypress uiteindelijk opgenomen wordt in het advies.
 
 %Hier beschrijf je wat je verwacht uit je onderzoek, met de motivatie waarom. Het is \textbf{niet} erg indien uit je onderzoek andere resultaten en conclusies vloeien dan dat je hier beschrijft: het is dan juist interessant om te onderzoeken waarom jouw hypothesen niet overeenkomen met de resultaten.
 
