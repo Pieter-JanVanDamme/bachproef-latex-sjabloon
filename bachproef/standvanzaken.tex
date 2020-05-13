@@ -19,7 +19,7 @@ In dit hoofdstuk worden eerst de principes van een robuuste testarchitectuur bes
 
 \section{Testing Architectuur}
 
-De consensus is dat grofweg 50\% van de middelen van een softwareproject besteed worden aan de testfase \cite{Kasurinen2010,Tsai2001,Dadwal2018}. Er is met andere woorden een sterk (financieel) motief om dit aandeel te verkleinen middels test automatisatie.
+De consensus is dat grofweg 50\% van de middelen van een softwareproject besteed worden aan de testfase (~\cite{Kasurinen2010,Tsai2001,Dadwal2018}). Er is met andere woorden een sterk (financieel) motief om dit aandeel te verkleinen middels test automatisatie.
 
 Wie het implementeren van test automatisatie overweegt, dient er zich bewust van te zijn dat de kosten daarvan hoger zijn tijdens de eerste release van het test automatisatiesysteem \autocite{Fewster2001} \autocite{Kumar2016}. Dit is althans het geval wanneer men een minimale onderhoudskost nastreeft. In dit geval kunnen de kosten geassocieerd met test automatisatie op \emph{lange} termijn echter gereduceerd worden tot minder dan de helft van de kost om het testen 100\% manueel uit te voeren \autocite{Kumar2016}.
 
@@ -44,7 +44,7 @@ De tiers kunnen evengoed georganizeerd worden in een \emph{front-end} (de grafis
 
 \subsection{End-to-End Testing}
 
-Een mulitierarchitectuur laat toe softwaremodules in afzondering te valideren, wat het mogelijk maakt fouten snel en met grote nauwkeurigheid te identificeren. Om te kunnen stellen dat een gegeven softwareproduct aan de vooropgestelde kwaliteitseisen voldoet, moet dat product echter ook als een geheel én in zijn gebruikscontext gevalideerd worden. Dit gebeurt hoofdzakelijk op twee manieren \cite{Tsai2001}:
+Een mulitierarchitectuur laat toe softwaremodules in afzondering te valideren, wat het mogelijk maakt fouten snel en met grote nauwkeurigheid te identificeren. Om te kunnen stellen dat een gegeven softwareproduct aan de vooropgestelde kwaliteitseisen voldoet, moet dat product echter ook als een geheel én in zijn gebruikscontext gevalideerd worden. Dit gebeurt hoofdzakelijk op twee manieren \autocite{Tsai2001}:
 
 \begin{enumerate}
     \item ``Integratietesting'': test meerdere modules als groep (subsysteem) 
@@ -60,7 +60,7 @@ Zowel thin-threads als hun condities hebben onderlinge relaties en kunnen in een
 \begin{figure}[h!]
     \centering
     \includegraphics[scale=0.45]{img/Tsai2001ThinThreadTree.png}
-    \caption{Een hypothetische thin-thread boom voor een bankiersapplicatie ~\cite{Tsai2001}}
+    \caption{Een hypothetische thin-thread boom voor een bankiersapplicatie \autocite{Tsai2001}}
     \label{fig:tsaithinthreadtree}
 \end{figure}
 
@@ -86,11 +86,63 @@ Bij het opstellen van \textbf{E2E test cases} op basis van deze techniek dienen 
 \begin{figure}[h!]
     \centering
     \includegraphics[scale=0.35]{img/Tsai2001ComplexTestScenario.png}
-    \caption{Voorbeeld van een test case opgebouwd uit 3 verschillende thin-threads ~\cite{Tsai2001}}
+    \caption{Voorbeeld van een test case opgebouwd uit 3 verschillende thin-threads \autocite{Tsai2001}}
     \label{fig:tsaicomplexscenario}
 \end{figure}
 
 Om de test cases te vervolledigen tot reële gebruiksscenario's moet men ten slotte inputs kiezen op basis van de grenzen van de condities. Meestal gaat men \emph{grenswaarden} kiezen om te testen \autocite{Jorgensen2013}, maar dit kan ook door: de input \emph{willekeurig} te selecteren \autocite{Loo1988}, de mogelijke inputs in \emph{categorieën} te sorteren en daar representatieve data uit halen of door eenvoudigweg data uit de reële gebruiksomgeving te gebruiken (\emph{``usage-based testing''}) \autocite{Dyer1992}.
+
+Thin threads steunen inherent op \textbf{reusability}, wat de opbouw van een test automatisatiesysteem niet alleen versnelt maar ook de kwaliteit en onderhoudbaarheid van het systeem ten goede komt \autocite{LombardHill2014}. De specifieke implementatie van thin threads is afhankelijk van het gebruikte framework. In de praktijk zullen dit vaak scripts zijn, hoewel elke vorm van hergebruik voordelig is \autocite{Madan2013} \autocite{Barrett2013}.
+
+\subsubsection{Onderhoudbaarheid van een Test Automatisatiesysteem}
+
+Het succes van een test automatisatieproject op de lange termijn is sterk afhankelijk van de onderhoudbaarheid van het systeem. Jim Holmes identificeert in zijn whitepaper ``Getting off on the Right Foot with Your Test Automation Project'' drie belangrijke problemen die de onderhoudbaarheid van web-based test automatisatiesystemen ondermijnen \autocite{Holmes2020}:
+
+\begin{enumerate}
+    \item Slecht gedefinieerde \textbf{``element locators''}.
+    \item Synchronisatieproblemen bij \textbf{dynamische content}.
+    \item Het niet consequent toepassen van \textbf{software engineering principes} zoals het \emph{Single Responsibility Principle} (SRP) en \emph{Don't Repeat Yourself} (DRY).
+\end{enumerate}
+
+De zogeheten ``locators'' laten toe dat het geautomatiseerde systeem elementen op een pagina kan vinden, bijvoorbeeld een input-element dat het syteem kan gebruiken om testdata in te voeren. Idealiter zijn deze locators:
+
+\begin{itemize}
+    \item \textbf{Flexibel}. Het gebruiken van het volledige pad van een element als locator is riskant; wijzigingen aan de structuur van pagina's maakt zulke locators snel onbruikbaar. Met unieke ID's, of tenminste vaste voor- en achtervoegsels voor bepaalde soorten elementen, kan men het gebruik van paden vermijden. Vaak is het ook mogelijk om elementen te selecteren op basis van één of meerdere criteria: types, klassen, inhoud, bovenliggende of onderliggende elementen, positie binnen een hiërarchie etc.
+    \item \textbf{Gecentraliseerd}. Middels \emph{dictionaries} — die locators als sleutel/waarde-paren opslaan — of het \emph{page object pattern} — een recente techniek die pagina's als (objectgeoriënteerde) klassen met bijhorende attributen en methoden behandelt — kan men locators centraal beheren. Dit laat ook toe om locators te hergebruiken.
+\end{itemize}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[scale=0.5]{img/Holmes2020XPath.PNG}
+    \caption{Voorbeeld van een pad op een HTML-pagina \autocite{Holmes2020}}
+    \label{fig:holmesxpath}
+\end{figure}
+
+De synchronisatieproblemen die optreden bij dynamische content worden vaak opgelost door expliciet te wachten tot aan bepaalde \emph{condities} voldaan wordt vooraleer verder te gaan naar de volgende stap. Een andere methode kan ontleend worden van Android Instrumentation testing: door gebruik te maken van het \emph{observer pattern} kan men wachten tot het gewenste resultaat beschikbaar is vooraleer verder te gaan met een test \autocite{Elye2018}. Dit vermijdt ook nodeloos wachten door gebruik te maken van een \emph{sleep}-functie.
+
+Een andere belangrijke overweging is \textbf{test coverage} (testdekking): het aandeel van de code en de functionele vereisten zoals beschreven in de functionele specificatie dat in de (al dan niet geautomatiseerde) test cases gevalideerd wordt \autocite{Sheth2019}. Een dekkingsgraad van 100\% is niet in alle gevallen nodig om de kwaliteit van het opgeleverde softwareproduct te garanderen — sterker nog: eenmaal voorbij 90\% neemt de benodigde tijd om testen te implementeren voor het overblijvende deel sterk toe \autocite{Prause2017}.
+
+\subsubsection{Beheer van Testdata}
+
+Doorgaans worden testing frameworks ingedeeld in één van twee of drie groepen, op basis van hoe zij testdata beheren \autocite{Day2014} \autocite{Laukkanen2006}:
+
+\begin{enumerate}
+    \item \textbf{Data driven}. Dit type framework scheidt de testdata van de scripting logica door die eerste als sleutel-waarde paren op te slaan in een extern bestand (gaande van eenvoudige rekenbladen tot Open DataBase Connectivity). Testscenarios worden vaak met verschillende inputs (en corresponderende outputs) herhaald om alle mogelijk test cases af te dekken. Data driven frameworks leggen met andere woorden de nadruk op het verveelvuldigen van scenarios om de test coverage te vergroten.
+    \begin{figure}[h!]
+        \centering
+        \includegraphics[scale=0.4]{img/Laukkanen2006DataDriven.PNG}
+        \caption{Voorbeeld van sleutel-waarde paren die gebruikt worden binnen hetzelfde scenario, nl. de uitvoering van een binaire operatie \autocite{Laukkanen2006}.}
+        \label{fig:laukkanendatadriven}
+    \end{figure}
+    \item \textbf{Keyword driven}. Keyword driven frameworks focusen zich vooral op hergebruik en onderhoudbaarheid van de testen. Stukken code, geïdentificeerd a.d.h.v \emph{keywords}, worden geïsoleerd in externe bestanden (data tables) samen met eventuele data/locators. Testscenarios worden vervolgens samengesteld door keywords aan elkaar te rijgen. Dit zorgt ook voor een grotere mate van afhankelijkheid van het framework zelf \autocite{Madan2013}.
+        \begin{figure}[h!]
+        \centering
+        \includegraphics[scale=0.4]{img/Laukkanen2006KeywordDriven.PNG}
+        \caption{Voorbeeld van test cases die opgebouwd worden uit keywords en bijhorende data \autocite{Laukkanen2006}.}
+        \label{fig:laukkanenkeyworddriven}
+    \end{figure}
+    \item \textbf{Hybrid}. Hybride frameworks combineren bovenstaande technieken. De meeste mature frameworks lijken naar deze vorm te evolueren \autocite{Day2014}.
+\end{enumerate}
 
 \subsection{Overwegingen bij de Keuze voor een Test Automatisatiesysteem}
 
@@ -104,12 +156,7 @@ Test automatisatie vergt een substantiële initiële investering; analyse van de
 
 \section{e2e Testing Frameworks voor Angular}
 
-\autocite{Anandan}
-\autocite{Kumar2016}
-\autocite{Barrett2013}
-\autocite{Holmes}
-\autocite{Singh2015}
-\autocite{Madan2013}
+~\cite{Singh2015}
 
 \lipsum[4]
 
