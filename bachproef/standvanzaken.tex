@@ -114,7 +114,7 @@ De zogeheten ``locators'' laten toe dat het geautomatiseerde systeem elementen o
 \begin{figure}[h!]
     \centering
     \includegraphics[scale=0.5]{img/Holmes2020XPath.PNG}
-    \caption{Voorbeeld van een pad op een HTML-pagina \autocite{Holmes2020}}
+    \caption{Voorbeeld van een HTML-pagina met een input-element en de bijhorende locator op basis van het hiërarchische pad. \autocite{Holmes2020}}
     \label{fig:holmesxpath}
 \end{figure}
 
@@ -131,7 +131,7 @@ Doorgaans worden testing frameworks ingedeeld in één van twee of drie groepen,
     \begin{figure}[h!]
         \centering
         \includegraphics[scale=0.4]{img/Laukkanen2006DataDriven.PNG}
-        \caption{Voorbeeld van sleutel-waarde paren die gebruikt worden binnen hetzelfde scenario, nl. de uitvoering van een binaire operatie \autocite{Laukkanen2006}.}
+        \caption{Voorbeeld van sleutel-waarde paren die gebruikt worden binnen hetzelfde scenario, nl. de uitvoering van een binaire wiskundige operatie \autocite{Laukkanen2006}.}
         \label{fig:laukkanendatadriven}
     \end{figure}
     \item \textbf{Keyword driven}. Keyword driven frameworks focusen zich vooral op hergebruik en onderhoudbaarheid van de testen. Stukken code, geïdentificeerd a.d.h.v \emph{keywords}, worden geïsoleerd in externe bestanden (data tables) samen met eventuele data/locators. Testscenarios worden vervolgens samengesteld door keywords aan elkaar te rijgen. Dit zorgt ook voor een grotere mate van afhankelijkheid van het framework zelf \autocite{Madan2013}.
@@ -156,21 +156,223 @@ Test automatisatie vergt een substantiële initiële investering; analyse van de
 
 \section{e2e Testing Frameworks voor Angular}
 
-~\cite{Singh2015}
+\textbf{Angular}, het door Colruyt Group gekozen framework voor de nieuwe generatie van hun checkoutsysteem, is een open source framework voor het bouwen van Single Page Application (SPA)\footnote{Een \textbf{Single Page Application} zal op dynamische wijze één web pagina continu herschrijven met nieuwe data van de web server. Dit in tegenstelling tot de traditionele manier waar de browser bij de meeste handelingen van de gebruiker de volledige pagina herlaadt \autocite{Neoteric2016}.} ontwikkeld door Google. Het framework maakt voornamelijk gebruik van HTML en TypeScript (een uitbreiding van JavaScript). \autocite{AngularArchitecture}
 
-\lipsum[4]
+De architectuur van Angular applicaties is gebaseerd op \textbf{NgModules} (``Angular modules'') die samenhorende componenten en services bevatten. Elke Angular app heeft minstens één NgModule: de \emph{root module} van waaruit de applicatie gelaunched wordt. Elk zichtbaar element (``view'') op Angular webpaginas wordt gestuurd door een \textbf{Component} dat de benodigde logica bevat en toegang heeft tot de relevante data. De view zelf wordt gerenderd aan de hand van een \textbf{template} die middels event en property binding met het component communiceert. Pagina's worden dan opgebouwd door Componenten te combineren en, waar nodig, te wisselen. \autocite{Tuzi2018,Garg2019,AngularArchitecture}
+
+De correcte samenwerking tussen deze verschillende onderdelen wordt geverifiëerd door gebruikersinput te simuleren en de daaruit resulterende web pagina te valideren — i.e. E2E testing. Deze sectie gaat dieper in op de drie eerder genoemde kandidaat-frameworks voor het E2E testen van Angular applicaties.
 
 \subsection{Protractor}
 
-\lipsum[6-7]
+Protractor is een open source E2E testing framework voor AngularJS en Angular. Google, mede-ontwikkelaar van AngularJS en zijn opvolger Angular, bracht de eerste versie uit in 2013 \autocite{Amorim2014}.
+
+Het framework bouwt verder op een aantal andere technologieën, zoals geïllustreerd wordt door onderstaand diagram. Een \textbf{web browser} dient als gebruikersinterface voor de Angular applicatie — enerzijds om web pagina's te renderen, en anderzijds om input te aanvaarden. In het geval van geautomatiseerde systemen heeft men een framework nodig om deze browser te automatiseren, hier is dat \textbf{Selenium} WebDriver. \textbf{WebDriver JS} is een javascript bindings implementatie voor Selenium die het test framework de benodigde APIs levert om testen geschreven in javascript  te kunnen uitvoeren. (\cite{TutorialspointProtractor2020})
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[scale=0.6]{img/TutorialsPointProtractor2020ProtractorDiagram.jpg}
+    \caption{De structuur van een mogelijke stack die gebruik maakt van Protractor als end-to-end testing framework \autocite{TutorialspointProtractor2020}.}
+    \label{fig:tutorialspointprotractordiagram}
+\end{figure}
+
+\textbf{Protractor} fungeert als een schil rond de Selenium WebDriver die toelaat gebruikersacties te simuleren (i.e. een \textbf{test runner}). Het framework biedt, naast een compactere syntaxis dan die beschikbaar in pure Selenium, ook een antwoord op de eerder besproken uitdagingen met name het beheren van locatoren en het omgaan met synchronisatieproblemen. (\cite{ToolsQA2019})
+
+Protractor heeft ten slotte een \textbf{assertion framework} nodig om de testing interface te voorzien. De software tester schrijft zijn testen middels \textbf{assertions}: predicaten gebonden aan bepaalde punten in de software die toelaten te evalueren of de software onder gegeven voorwaarden de correcte toestand aanneemt \autocite{Alakeel2014}. Het assertion framework laat toe om die assertions op een compacte en gemakkelijk uitbreidbare manier uit toe voeren. Voor Protractor is \textbf{Jasmine} het standaard framework, maar dit kan ook een ander framework zijn. (\cite{SoftwareTestingHelp}).
+
+Protractor biedt volgende relevante voordelen:
+\begin{itemize}
+    \item \textbf{Meerdere assertion libraries}. Standaard ondersteunt Protractor Jasmine, Mocha, Cucumber en Serenity/JS \autocite{ProtractortestFrameworks}.
+    \item \textbf{Parallel testen over meerdere browsers}. De API van WebDriver JS is gebaseerd op \emph{promises}: elke functie heeft een promise als terugkeerwaarde, dewelke dient als plaatshouder voor het resultaat van een asynchrone functie. Dit, in combinatie met Selenium grid, laat toe om testen parallel te laten verlopen. (\cite{ProtractortestControlflow,Kamothi2019,TutorialspointProtractor2020}).
+    \item \textbf{Auto-synchronisatie}. Protractor bouwt automatische wachtperioden in om het gebruik van expliciete \emph{waits} te vermijden — dit is vooral toepasselijk bij de locators specifiek aan Angular (o.a. \mintinline{TypeScript}{by.model()}, \mintinline{TypeScript}{by.binding()}, en \mintinline{TypeScript}{by.repeater()}) \autocite{Jarif2018}.
+    \item \textbf{Cross-browser testing en headless browsers}. Protractor laat toe scripts in meerdere browsers uit te voeren, wat het mogelijk maakt op efficiënte manier de compatibiliteit van de applicatie met verschillende browsers te verifiëren. Het uitvoeren van tests op \emph{headless browsers} — i.e. browsers zonder grafische user interface — laat eveneens toe testen te versnellen doordat pagina's niet meer gerenderd moeten worden. \autocite{ToolsQA2019}
+\end{itemize}
+
+%Opm.: breaklines werkt enkel deftig als ik een spatie zet tussen by en het punt
+Onderstaand voorbeeld illustreert het gebruik van het Page Object Model (POM, zie \cite{Mohsin2018}) alsook de Angular-specifieke locators (\mintinline[breaklines]{TypeScript}{by.model('yourName')} en \mintinline[breaklines]{TypeScript}{by .binding('yourName')}) in Protractor \autocite{ProtractortestPageobjects}. Het Page Object met bijhorende attributen en methoden wordt eerst gedefinieerd:
+
+\begin{minted}[
+    linenos,
+    breaklines
+]
+{TypeScript}
+var AngularHomepage = function() {
+    var nameInput = element(by.model('yourName'));
+    var greeting = element(by.binding('yourName'));
+
+    this.get = async function() {
+        await browser.get('http://www.angularjs.org');
+    };
+
+    this.setName = async function(name) {
+        await nameInput.sendKeys(name);
+    };
+
+    this.getGreetingText = function() {
+        return greeting.getText();
+    };
+
+    // Not async, returns the element
+    this.getGreeting = function() {
+        return greeting;
+    };
+};
+module.exports = new AngularHomepage();
+\end{minted}
+
+Dit Page Object kan dan gebruikt worden in de uitvoering van (asynchrone) testen:
+
+\begin{minted}[
+    linenos,
+    breaklines
+]
+{TypeScript}
+var angularHomepage = require('./AngularHomepage');
+describe('angularjs homepage', function() {
+    it('should greet the named user', async function() {
+        await angularHomepage.get();
+
+        await angularHomepage.setName('Julie');
+
+        expect(await angularHomepage.getGreetingText()).toEqual('Hello Julie!');
+    });
+});
+\end{minted}
 
 \subsection{Cypress}
 
-\lipsum[3-4]
+Cypress, eveneens een open source E2E testing framework, werd in 2018 gereleased door een onafhankelijk team geleid door Brian Mann \autocite{Mann2017,Mann2018}.
+
+In tegenstelling tot de meeste E2E testing frameworks, die buiten de browser runnen en opdrachten over het netwerk heen uitvoeren, is Cypress geïntegreerd in dezelfde run loop als de applicatie die getest wordt \autocite{Bharadwaj2018,Cypress1}. Figuur ~\ref{fig:vierbergencypressarchitecture} illustreert de werking van het framework. Het browser window bevat zowel de applicatie als Cypress in hun eigen iFrames. Middels een proxy communiceert de browser met een Nodejs-proces dat fungeert als substituut voor de backend. Omdat de gebruikte proxy deel is van Cypress is het mogelijk om requests en responses te onderscheppen en waar nodig te wijzigen of mocken \autocite{Vierbergen2019}.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[scale=0.4]{img/Vierbergen2019CypressArchitecture.png}
+    \caption{Architectuur van het Cypress testing framework \autocite{Vierbergen2019}.}
+    \label{fig:vierbergencypressarchitecture}
+\end{figure}
+
+Deze structuur geeft Cypress de volgende voordelen:
+\begin{itemize}
+    \item \textbf{Snelheid}. Cypress runt rechtstreeks in de browser en is daardoor veel sneller dan frameworks die remote werken, zoals die Selinium gebruiken.
+    \item \textbf{Controle}. De tester heeft rechtstreekse toegang tot netwerkverkeer en host objecten, wat hem meer controle geeft (o.a. directe DOM manipulatie) en toelaat de applicatie gemakkelijker te debuggen.
+    \item \textbf{Automatisch wachten}. Cypress wacht automatisch tot de volledige pagina geladen werd en alle asynchrone requests afgehandeld werden vooraleer te beginnen met een test.
+    \item \textbf{Real-time reloading}. By het opslaan van testbestanden zal Cypress de test automatisch opnieuw runnen.
+    \item \textbf{Alles-in-één}. Het is niet nodig om meerdere tools te installeren en te laten samenwerken zoals bij vele andere frameworks wél het geval is.
+    \item \textbf{Ondersteunt alle JavaScript frameworks}. Elk op JavaScript gebaseerd framework — waaronder Angular, React, Vue en Elm — kan gebruik maken van de mogelijkheden die Cypress biedt \autocite{Karen2019}.
+    \item \textbf{Headless browsers}. Ook Cypress kan headless gerund worden \autocite{Karen2019}.
+\end{itemize}
+
+Er zijn echter ook een aantal belangrijke nadelen. Ten eerste is Cypress gespecialiseerd in end-to-end testing — elk andere soort testing, bijvoorbeeld unit testing, vereist een bijkomstige tool of pakket \autocite{McPeak2018}. Ten tweede ondersteunt Cypress enkel Chrome als browser voor het runnen van testen \autocite{Leners2020}. Dit zorgt ervoor dat opgebouwde expertise in het gebruik van Cypress minder overdraagbaar is dan E2E testing frameworks die meer technologieën ondersteunen.
+
+Mocha en Chai worden hoofzakelijk gebruikt om Cypress testen te schrijven, hoewel er ook integraties zijn met andere technologieën zoals Cucumber \autocite{Jordi2019}.
+
+Een voorbeeld van een test geschreven in Cypress wordt hier onder gegeven \autocite{Vierbergen2019}. Merk op dat de functies \mintinline[breaklines]{JavaScript}{context()} en \mintinline[breaklines]{JavaScript}{it()} — die ontleend werden aan Mocha — vervangen kunnen worden door respectievelijk \mintinline[breaklines]{JavaScript}{describe()} en \mintinline[breaklines]{JavaScript}{specify()} \autocite{Cypress2}.
+
+\begin{minted}[
+    linenos,
+    breaklines
+]
+{JavaScript}
+context('Clients test', () => {
+    beforeEach(() => {
+        cy.visit('/clients')
+    })
+    
+    it('Clients page should have Clients as a title', () => {
+        cy.get('.table-container-header h1').contains('Clients');
+    });
+    
+    it('Clients table should initially have 20 rows', () => {
+        cy.get('.mat-row').then(($rows) => {
+            expect($rows.length).to.be.eq(20);
+        });
+    });
+    
+    it('Clients table should show 10 rows when pagesize is set to 10', () => {
+        cy.get('mat-select').click();
+        cy.get('mat-option').contains('10').then(option => {
+            cy.wrap(option).contains('10');
+            option[0].click();
+            cy.get('mat-select').contains('10');
+            cy.get('.mat-row').then(($rows) => {
+                expect($rows.length).to.be.eq(10);
+            });
+        });
+        
+    });
+})
+\end{minted}
+
+Elementen worden in cypress geselecteerd middels \mintinline[breaklines]{JavaScript}{cy.get()} die elk type selector of een alias kan bevatten. Interactie met het geselecteerde element wordt vervolgens verwezenlijkt met commando's zoals \mintinline[breaklines]{JavaScript}{.click()}, \mintinline[breaklines]{JavaScript}{.type()} en \mintinline[breaklines]{JavaScript}{.check()}. Commando's zoals \mintinline[breaklines]{JavaScript}{.contains()}, \mintinline[breaklines]{JavaScript}{.find()} en \mintinline[breaklines]{JavaScript}{.should()} kunnen waar nodig aan \mintinline[breaklines]{JavaScript}{cy.get()} geregen worden om het resultaat te verfijnen. Het gebruik van HTML \mintinline[breaklines]{HTML}{data-*} attributen wordt door het Cypress team aangemoedigd als best practice voor locators. \autocite{CypressGet,CypressInteractingWithElements,CypressBestPractices}
+
+Zoals vermeld is het mogelijk om backend calls te onderscheppen en mockdata terug te sturen. Dit is mogelijk door een server te runnen met \mintinline[breaklines]{JavaScript}{cy.server()} en de te onderscheppen routes en de terug te sturen mockdata te definiëren \autocite{Vierbergen2019}:
+
+\begin{minted}[
+linenos,
+breaklines
+]
+{JavaScript}
+beforeEach(() => {
+    cy.server();
+    cy.route('GET', '**/*/api/client-service/**/*',
+    {
+        "content":[
+        {
+            "id":18,
+            "firstName":"Tatiana",
+            "lastName":"Velez",
+            "email":"diam.dictum@Proin.net",
+            "birthday":"626286135",
+            "city":"Dumfries",
+            "zip":"694245"
+        }
+        ],
+        "pageable":{
+            "sort": {
+                "sorted":true,
+                "unsorted":false
+            },
+            "pageSize":20,
+            "pageNumber":0,
+            "offset":0,
+            "paged":true,
+            "unpaged":false
+        },
+        "last":false,
+        "totalElements":1,
+        "totalPages":1,
+        "first":true,
+        "sort":{
+            "sorted":true,
+            "unsorted":false
+        },
+        "numberOfElements":1,
+        "size":1,
+        "number":0
+    }
+    ).as('stub-clients');   
+    cy.visit('/clients');
+})
+\end{minted}
+
+Ten slotte biedt Cypress twee mogelijkheden om testen de debuggen. Enerzijds zijn er ``Snapshots'': bepaalde waarden worden uitgeschreven in snapshotbestanden zodat de ontwikkelaar deze na de test kan controleren en kan gebruiken als verwachte waarden in herhalingen van de test. Anderzijds laten de commando's \mintinline[breaklines]{JavaScript}{cy.pause()} en \mintinline[breaklines]{JavaScript}{cy.debug()} toe om respectievelijk de uitvoering van een test te pauzeren en om extra logging te bekomen in de console van de browser. \autocite{CypressSnapshot2018,Noring}
 
 \subsection{UFT}
 
-\lipsum[3-4]
+Unified Functional Testing (UFT) is een softwarepakket dat HP's QuickTest Professional (QTP) en Service Test verenigt. De software werd in 2001 voor het eerst gereleased werd en wordt sinds 2016 door Micro Focus onderhouden \autocite{Swati2020,LearnQtpWhatIs}.
+
+UFT verschilt op een aantal belangrijke punten met Protractor en Cypress. Eerst en vooral is het een beduidend ouder pakket; wat vandaag gekend is als ``UFT'' werd voor het eerst in 2001 beschikbaar gemaakt, terwijl Protractor en Cypress pas in 2013 en 2018 (respectievelijk) uitgebracht werden \autocite{Swati2020,Mann2018,Amorim2014}. Ten tweede is de software gecommercialiseerd en enkel beschikbaar bij aanschaf van een licentie, terwijl Protractor en Cypress open source zijn \autocite{Guru99SeleniumUFTDifference,VSoftUFTvsSelenium,Mann2017,Kumar}. Ten derde zijn Protractor en Cypress gespecialiseerd in web applicaties, terwijl UFT alle soorten client-server applicaties kan testen — dus ook desktop applicaties \autocite{Tribbiani2017,Cypress1,Amorim2014}. Ten vierde biedt UFT — die VBScript als scripting taal heeft \autocite{Rajkumar2017} — een grafische, op iconen gebaseerde user interface die het niet-technische testers mogelijk maakt testen te schrijven \autocite{Guru99WhatIsQTPUFT}.
+
+% Zie object model -- https://admhelp.microfocus.com/uft/en/all/AutomationObjectModel/Default.htm
+
+%data-driven testing
+
+%keyword view
+
+%expert view
+
+%
+
 
 \subsection{Behavior Driven Development Frameworks}
 
@@ -178,12 +380,12 @@ Test automatisatie vergt een substantiële initiële investering; analyse van de
 
 \subsubsection{Mocha}
 
-\lipsum[8-10]
+\lipsum[8-9]
 
 \subsubsection{Jasmine \& Karma}
 
-\lipsum[8-10]
+\lipsum[8-9]
 
 \subsubsection{Cucumber}
 
-\lipsum[8-10]
+\lipsum[8-9]
