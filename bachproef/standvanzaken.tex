@@ -361,15 +361,51 @@ Ten slotte biedt Cypress twee mogelijkheden om testen de debuggen. Enerzijds zij
 
 Unified Functional Testing (UFT) is een softwarepakket dat HP's QuickTest Professional (QTP) en Service Test verenigt. De software werd in 2001 voor het eerst gereleased werd en wordt sinds 2016 door Micro Focus onderhouden \autocite{Swati2020,LearnQtpWhatIs}.
 
-UFT verschilt op een aantal belangrijke punten met Protractor en Cypress. Eerst en vooral is het een beduidend ouder pakket; wat vandaag gekend is als ``UFT'' werd voor het eerst in 2001 beschikbaar gemaakt, terwijl Protractor en Cypress pas in 2013 en 2018 (respectievelijk) uitgebracht werden \autocite{Swati2020,Mann2018,Amorim2014}. Ten tweede is de software gecommercialiseerd en enkel beschikbaar bij aanschaf van een licentie, terwijl Protractor en Cypress open source zijn \autocite{Guru99SeleniumUFTDifference,VSoftUFTvsSelenium,Mann2017,Kumar}. Ten derde zijn Protractor en Cypress gespecialiseerd in web applicaties, terwijl UFT alle soorten client-server applicaties kan testen — dus ook desktop applicaties \autocite{Tribbiani2017,Cypress1,Amorim2014}. Ten vierde biedt UFT — die VBScript als scripting taal heeft \autocite{Rajkumar2017} — een grafische, op iconen gebaseerde user interface die het niet-technische testers mogelijk maakt testen te schrijven \autocite{Guru99WhatIsQTPUFT}.
+UFT verschilt op een aantal belangrijke punten met Protractor en Cypress:
+\begin{itemize}
+    \item Eerst en vooral is het een beduidend ouder pakket; wat vandaag gekend is als ``UFT'' werd voor het eerst in \textbf{2001} beschikbaar gemaakt, terwijl Protractor en Cypress pas in 2013 en 2018 (respectievelijk) uitgebracht werden \autocite{Swati2020,Mann2018,Amorim2014}.
+    
+    \item Ten tweede is de software gecommercialiseerd en enkel beschikbaar bij aanschaf van een \textbf{licentie}, terwijl Protractor en Cypress open source zijn \autocite{Guru99SeleniumUFTDifference,VSoftUFTvsSelenium,Mann2017,Kumar}.
+
+    \item Ten derde zijn Protractor en Cypress gespecialiseerd in web applicaties, terwijl UFT alle soorten \textbf{client-server applicaties} kan testen — dus ook desktop applicaties \autocite{Tribbiani2017,Cypress1,Amorim2014}.
+
+    \item Ten vierde biedt UFT twee interfaces voor het schrijven van tests. De eerste is de \textbf{``expert view''} die de gebruiker de broncode — UFT gebruikt VBScript als scripting taal \autocite{Rajkumar2017} — van een test laat editeren. De tweede is de \textbf{``keyword view''}: een grafische user interface die het niet-technische testers mogelijk maakt testen te schrijven \autocite{Guru99WhatIsQTPUFT}.
+\end{itemize}
+UTF testen bestaan uit \emph{``acties''}, die kunnen worden hergebruikt wat modulariteit promoot. Zulke acties zijn elementaire handelingen zoals 'log in', 'schrijf en stuur email' en 'log uit'. Een test is met andere woorden een opeenvolging van verschillende acties die uitgevoerd worden, met verschillende parameters voor individuele testen.
+%%%%%%%%%%%%%%%%%%%%%%% REFERENTIE NODIG %%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Onderstaande figuur illustreert de opbouw van een UFT actie — in dit geval 'log in' — gebruik makende van de keyword view. Elk stap van de actie is een operatie die uitgevoerd wordt op een item: een object, een VBScript statement of een function call kan zijn. Deze operatie krijgt doorgaans een ``waarde'' (parameters of argumenten) en kan eventueel aangevuld worden met commentaar (``documentatie''). Merk het gebruik van een \textbf{objecthiërarchie} op: het item 'login' is een dialoog die de gebruiker vraagt 2 velden in te vullen, met name 'Agent Name' en 'Password'. \autocite{SwatiWorkingWithKeywordView2020}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[scale=0.5]{img/Swati-QTPKeywordScreen.png}
+    \caption{User interface van de keyword view in QTP \autocite{SwatiWorkingWithKeywordView2020}.}
+    \label{fig:utfkeywordview}
+\end{figure}
+
+Deze actie kan in de expert view als volgt geschreven worden \autocite{SwatiWorkingWithKeywordView2020}:
+
+\begin{minted}[
+linenos,
+breaklines
+]
+{VBScript}
+    Dialog("Login").WinEdit("Agent Name:").Set "swati"
+    Dialog("Login").WinEdit("Password:").SetSecure "5112fd3c42beb7a58069b67cfdd9b7e7ad1fc69c"
+    Dialog("Login").WinButton("OK").Click
+    msgbox "text"
+    If x=0 Then
+    msgbox "text 2"
+    End If
+    Window("Flight Reservation").ActiveX("MaskEdBox").Type "010312"
+    Window("Flight Reservation").WinComboBox("Fly From:").Select "Denver"
+    Window("Flight Reservation").WinComboBox("Fly To:").Select "Frankfurt"
+\end{minted}
 
 % Zie object model -- https://admhelp.microfocus.com/uft/en/all/AutomationObjectModel/Default.htm
 
 %data-driven testing
 
-%keyword view
-
-%expert view
 
 %
 
