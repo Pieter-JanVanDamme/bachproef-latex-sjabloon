@@ -371,10 +371,12 @@ UFT verschilt op een aantal belangrijke punten met Protractor en Cypress:
 
     \item Ten vierde biedt UFT twee interfaces voor het schrijven van tests. De eerste is de \textbf{``expert view''} die de gebruiker de broncode — UFT gebruikt VBScript als scripting taal \autocite{Rajkumar2017} — van een test laat editeren. De tweede is de \textbf{``keyword view''}: een grafische user interface die het niet-technische testers mogelijk maakt testen te schrijven \autocite{Guru99WhatIsQTPUFT}.
 \end{itemize}
-UTF testen bestaan uit \emph{``acties''}, die kunnen worden hergebruikt wat modulariteit promoot. Zulke acties zijn elementaire handelingen zoals 'log in', 'schrijf en stuur email' en 'log uit'. Een test is met andere woorden een opeenvolging van verschillende acties die uitgevoerd worden, met verschillende parameters voor individuele testen.
-%%%%%%%%%%%%%%%%%%%%%%% REFERENTIE NODIG %%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Onderstaande figuur illustreert de opbouw van een UFT actie — in dit geval 'log in' — gebruik makende van de keyword view. Elk stap van de actie is een operatie die uitgevoerd wordt op een item: een object, een VBScript statement of een function call kan zijn. Deze operatie krijgt doorgaans een ``waarde'' (parameters of argumenten) en kan eventueel aangevuld worden met commentaar (``documentatie''). Merk het gebruik van een \textbf{objecthiërarchie} op: het item 'login' is een dialoog die de gebruiker vraagt 2 velden in te vullen, met name 'Agent Name' en 'Password'. \autocite{SwatiWorkingWithKeywordView2020}
+Het softwarepakket is gemakkelijker in gebruik dan Protractor en Cypress, vooral dankzij de keyword view en de op iconen gebaseerde user interface. De software kan gebruikt worden bij het automatiseren van testen van allerlei soorten client-server applicaties (inclusief mobiele toepassingen) en de gebruiker geniet bovendien van full support bij HP. Daartegenover staat dat UFT enkel beschikbaar is op Windows, dat de licentiëring vrij kostelijk is, en dat het uitvoeren van testen relatief lang duurt doordat het de CPU en het RAM zwaar belast. \autocite{TutorialspointQTPQuickGuide,Arvy2011,Guru99SeleniumUFTDifference,Michaeli2016}
+
+UTF testen bestaan uit \textbf{``acties''}, die kunnen worden hergebruikt wat modulariteit promoot. Zulke acties zijn elementaire handelingen zoals 'log in', 'schrijf en stuur email' en 'log uit'. Een test is met andere woorden een opeenvolging van verschillende acties die uitgevoerd worden, met verschillende parameters voor individuele testen. \autocite{TutorialspointQTPQuickGuide,Guru99ActionsInQTPUFT}
+
+Onderstaande figuur illustreert de opbouw van een UFT actie — in dit geval 'log in' — gebruik makende van de keyword view. Elke \textbf{stap} van de actie is een \textbf{operatie} die uitgevoerd wordt op een \textbf{item}: een object, een VBScript statement of een function call. Deze operatie krijgt doorgaans een ``waarde'' (\emph{``value''}; parameters of argumenten) en kan eventueel aangevuld worden met commentaar (\emph{``documentation''}). Merk het gebruik van een \textbf{objecthiërarchie} op: het item 'login' is een dialoog die de gebruiker vraagt 2 velden in te vullen, met name 'Agent Name' en 'Password'. \autocite{SwatiWorkingWithKeywordView2020,SoftwareTestingClassOverviewKeywordView2014}
 
 \begin{figure}[h!]
     \centering
@@ -402,13 +404,25 @@ breaklines
     Window("Flight Reservation").WinComboBox("Fly To:").Select "Frankfurt"
 \end{minted}
 
-% Zie object model -- https://admhelp.microfocus.com/uft/en/all/AutomationObjectModel/Default.htm
+Validatie van de programmatoestand gebeurt in UTF middels \textbf{``checkpoints''}, die eenvoudigweg een verwachtte waarde vergelijken met de overeenkomstige waarde in het programma. UFT biedt een 10-tal zulke checkpoints — gaande van waarden in textgebieden en tabellen tot afbeeldingen en XML structuren — die een Boolse waarde als resultaat geven, zoals geïllustreerd door volgend voorbeeld: \mintinline[breaklines]{VBScript}{i=Browser("Gmail: Email from Google").Page("Gmail: Email from Google").Check(CheckPoint("Gmail: Email from Google"))}. \autocite{SoftwareTestingHelpStepGenerator}
 
-%data-driven testing
+\begin{figure}[h!]
+    \centering
+    \includegraphics[scale=0.8]{img/SoftwareTestingHelpQTPExpertView.jpg}
+    \caption{User interface van de expert view in QTP \autocite{SoftwareTestingHelpStepGenerator}.}
+    \label{fig:utfexpertview}
+\end{figure}
 
+UFT maakt gebruik van het \textbf{object model} om objecten te identificeren en om er mee te interageren. Aan de hand van \emph{``properties''} worden eerst \textbf{test objecten}, die de objecten in de applicatie weerspiegelen, verzameld in de \textbf{object repository} (OR). Bij wijze van voorbeeld: een aanklikbare knop (button) zal de property 'enable' hebben, wat wil zeggen dat het object aan- en uitgeschakeld kan worden. Bij het uitvoeren van een test worden de properties van de test objecten  vergeleken met die van de \textbf{run-time objecten} om ze te kunnen identificeren. Dit gebeurt aan de hand van \mintinline[breaklines]{VBScript}{GetROProperty} en \mintinline[breaklines]{VBScript}{SetTOProperty} operaties, waar 'RO' staat voor ``Run-time Object'' en 'TO' voor ``Test Object''. \autocite{TutorialspointQTPQuickGuide,LearnQTP2017ObjectRepo,LearnQTP2017ObjectRepo}
 
-%
+\begin{figure}[h!]
+    \centering
+    \includegraphics[scale=0.4]{img/LearnQTP2017GuideToObjectRepositoryInUft.jpg}
+    \caption{Diagram van de object repository zoals gekend in UFT \autocite{LearnQTP2017ObjectRepo}.}
+    \label{fig:utfobjectrepo}
+\end{figure}
 
+Het softwarepakket van HP biedt ondersteuning voor zowel data driven, keyword driven, als hybride \textbf{frameworks}. In elk geval wordt er gebruik gemaakt van een \textbf{driver script} dat alle benodigde initalisaties alsook het uitvoeren van de testen zelf voor zijn rekening neemt. \autocite{TutorialsPointDesigningFramework,TutorialsPointFrameworks,Guru99FrameworksInQTP}
 
 \subsection{Behavior Driven Development Frameworks}
 
