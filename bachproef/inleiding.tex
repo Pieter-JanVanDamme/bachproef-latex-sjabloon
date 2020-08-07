@@ -8,34 +8,45 @@
 Softwareontwikkeling is een relatief jonge industrie, maar ook één die aan een ijltempo moet matureren. Er is praktisch geen enkel domein dat gevrijwaard bleef van de digitale revolutie — of het nu gaat over consumentvriendelijke apps of de bijna onzichtbare toepassingen die onze maatschappij doen draaien. Het belang van robuuste kwaliteitsbewaking bij de ontwikkeling van nieuwe software kan dus moeilijk overschat worden. Quality assurance is dus geen verliespost maar een broodnodige investering. Anders gesteld:
 
 \begin{quote}
-"Quality is the ally of schedule and cost, not their adversary. If we have to sacrifice quality to meet schedule, it's because we are doing the job wrong from the very beginning." — James A. Ward
+"Quality is the ally of schedule and cost, not their adversary. If we have to sacrifice quality to meet schedule, it's because we are doing the job wrong from the very beginning." — James A. Ward \autocite{Olalere2019}
 \end{quote}
 
-“Software testing” is het verifiëren dat bepaalde software aan de vooropgestelde kwaliteitsvereisten voldoet. Dit is geenszins een triviale taak; het aantal mogelijke scenario’s en toestanden die software kan aannemen is enorm \autocite{Stamelos2007}. Bovendien kan elke wijziging aan de broncode onvoorziene gevolgen hebben in reeds bestaande functionaliteit (bron) en dus worden eerder uitgevoerde testen idealiter met regelmaat terug uitgevoerd. Het hoeft dus niet te verbazen dat testen naar schatting de helft van de totale kost van een softwareproduct vertegenwoordigd (bron, bron, bron, bron).
+“Software testing” is het verifiëren dat bepaalde software aan de vooropgestelde kwaliteitsvereisten voldoet. Dit is geenszins een triviale taak; het aantal mogelijke scenario’s en toestanden die software kan aannemen is enorm \autocite{Stamelos2007}. Bovendien kan elke wijziging aan de broncode onvoorziene gevolgen hebben in reeds bestaande functionaliteit (bron) en dus worden eerder uitgevoerde testen idealiter met regelmaat terug uitgevoerd. Het hoeft dus niet te verbazen dat testen naar schatting de helft van de totale kost van een softwareproduct vertegenwoordigt (~\cite{Kasurinen2010,Tsai2001,Dadwal2018}).
 
-Het testen van software kan in grote mate geautomatiseerd worden. Dit gebeurt echter best in een vroeg stadium van een softwareproject (bron) en vergt alleszins een aanzienlijke investering (bron) — zowel om het te implementeren als om het te onderhouden. De keuze voor een gepast testing framework — een raamwerk componenten die ontwikkelaars helpen op een gestructureerde en gestandaardiseerde manier geautomatiseerde testen te implementeren — is dan ook een beslissende factor in het slagen van testautomatisatie.
-
-Colruyt Group Services nv staat voor een gelijkaardige uitdaging. Het gros van de retailformules van Colruyt Group — met name: Colruyt Laagste Prijs, Colruyt Frankrijk, OKay, OKay Compact, Bio-Planet, Dreamland, Dreambaby, en de winkels onder Retail Partners Colruyt Group) — maakt gebruik van hetzelfde checkoutsysteem. Het bestaande systeem steunt echter op verouderde technologie. Om dit voor de core business essentiële systeem future-proof te houden, wordt het systeem volledig herschreven.
-
-In de eerste fase van dit project wordt de frontend (gebruikersinterface) van de checkout herwerkt als webapplicatie die steunt op het Angular framework. Colruyt Group Services ziet dit als een unieke opportuniteit om te investeren in performante en onderhoudbare testautomatisatie. Nog concreter willen zij de nadruk leggen op end to end (``e2e'') testing: het testen van een systeem door het simuleren van werkelijke gebruikersscenarios.
-
-De vraag die zich opdringt is dus: welk van de voor Angular beschikbare testing frameworks is het beste geschikt om testautomatisatie te introduceren in de nieuwe frontend van Colruyt Group's primaire checkoutsysteem?
+Het testen van software kan in grote mate geautomatiseerd worden. Dit gebeurt echter best in een vroeg stadium van een softwareproject (\cite{Burgin2007}) en vergt alleszins een aanzienlijke investering \autocite{Fewster2001,Kumar2016} — zowel om het te implementeren als om het te onderhouden. De keuze voor een gepast testing framework — een raamwerk componenten dat ontwikkelaars helpt op een gestructureerde en gestandaardiseerde manier geautomatiseerde testen te implementeren — is dan ook een beslissende factor in het slagen van testautomatisatie.
 
 
 \section{\IfLanguageName{dutch}{Probleemstelling}{Problem Statement}}
 \label{sec:probleemstelling}
 
-Uit je probleemstelling moet duidelijk zijn dat je onderzoek een meerwaarde heeft voor een concrete doelgroep. De doelgroep moet goed gedefinieerd en afgelijnd zijn. Doelgroepen als ``bedrijven,'' ``KMO's,'' systeembeheerders, enz.~zijn nog te vaag. Als je een lijstje kan maken van de personen/organisaties die een meerwaarde zullen vinden in deze bachelorproef (dit is eigenlijk je steekproefkader), dan is dat een indicatie dat de doelgroep goed gedefinieerd is. Dit kan een enkel bedrijf zijn of zelfs één persoon (je co-promotor/opdrachtgever).
+Colruyt Group Services nv staat momenteel voor haar eigen uitdaging m.b.t. test automatisatie. Het gros van de retailformules van Colruyt Group — met name: Colruyt Laagste Prijs, Colruyt Frankrijk, OKay, OKay Compact, Bio-Planet, Dreamland, Dreambaby, en de winkels onder Retail Partners Colruyt Group) — maakt gebruik van hetzelfde checkoutsysteem.
+
+Het bestaande systeem steunt echter op verouderde technologie voor haar gebruikersinterface — met name een intern ontwikkeld Java web applicatie framework dat steunt op FireFox 2.0 en JRE 1.4.1. Om dit voor de core business essentiële systeem future-proof te houden, wordt het systeem volledig herschreven.
+
+In de eerste fase van dit project wordt de frontend (gebruikersinterface) van de checkout herwerkt als webapplicatie die steunt op het Angular framework met een bijhorende update van de hardware. Deze fase is gekend als \textbf{TAC2.0}. Colruyt Group Services ziet dit als een unieke opportuniteit om te investeren in performante en onderhoudbare testautomatisatie. Nog concreter willen zij de nadruk leggen op end to end (``e2e'') testing: het testen van een systeem door het simuleren van werkelijke gebruikersscenarios.
+
+Concreet worden er drie test automatisatie frameworks door Colruyt Group in overweging genomen:
+
+\begin{enumerate}
+    \item \textbf{Protractor} — het standaard testing framework voor Angular ontwikkeld door Google \autocite{Amorim2014}.
+    \item \textbf{Cypress} — een recent alternatief dat op de markt gebracht werd door een onafhankelijk team \autocite{Mann2017}.
+    \item \textbf{HP UFT} — gevestigde waarde op het vlak van testautomatisatie van client-server applicaties \autocite{Swati2020} die vandaag reeds gebruikt wordt in Colruyt India, de overzeese IT afdeling van Colruyt Group.
+\end{enumerate}
+
 
 \section{\IfLanguageName{dutch}{Onderzoeksvraag}{Research question}}
 \label{sec:onderzoeksvraag}
 
-Wees zo concreet mogelijk bij het formuleren van je onderzoeksvraag. Een onderzoeksvraag is trouwens iets waar nog niemand op dit moment een antwoord heeft (voor zover je kan nagaan). Het opzoeken van bestaande informatie (bv. ``welke tools bestaan er voor deze toepassing?'') is dus geen onderzoeksvraag. Je kan de onderzoeksvraag verder specifiëren in deelvragen. Bv.~als je onderzoek gaat over performantiemetingen, dan 
+De vraag die zich opdringt is dus: welk van de voorgestelde frameworks is het beste geschikt om testautomatisatie te introduceren in de nieuwe frontend van Colruyt Group's primaire checkoutsysteem?
 
 \section{\IfLanguageName{dutch}{Onderzoeksdoelstelling}{Research objective}}
 \label{sec:onderzoeksdoelstelling}
 
-Wat is het beoogde resultaat van je bachelorproef? Wat zijn de criteria voor succes? Beschrijf die zo concreet mogelijk. Gaat het bv. om een proof-of-concept, een prototype, een verslag met aanbevelingen, een vergelijkende studie, enz.
+De keuze voor een framework is een afweging tussen verschillende factoren — het antwoord op de onderzoeksvraag van deze bachelorproef wordt dus als een advies geformuleerd. Dit advies steunt op een vergelijkende studie tussen de drie verschillende frameworks.
+
+Enerzijds werd een reeks representatieve gebruiksscenario's in elk van de drie frameworks als geautomatiseerde end-to-end testen geïmplementeerd. Deze testen worden vervolgens uitgevoerd op een pre-productie versie van het nieuwe checkoutsysteem, wat toelaat de performantie van de frameworks onderling te vergelijken.
+
+Anderzijds worden de overige eigenschappen en mogelijkheden van de frameworks in functie van de noden van Colruyt Group in overweging genomen.
 
 \section{\IfLanguageName{dutch}{Opzet van deze bachelorproef}{Structure of this bachelor thesis}}
 \label{sec:opzet-bachelorproef}
@@ -49,6 +60,8 @@ De rest van deze bachelorproef is als volgt opgebouwd:
 In Hoofdstuk~\ref{ch:stand-van-zaken} wordt een overzicht gegeven van de stand van zaken binnen het onderzoeksdomein, op basis van een literatuurstudie.
 
 In Hoofdstuk~\ref{ch:methodologie} wordt de methodologie toegelicht en worden de gebruikte onderzoekstechnieken besproken om een antwoord te kunnen formuleren op de onderzoeksvragen.
+
+In Hoofdstuk~\ref{ch:functionele-omschrijving} wordt de frontend applicatie van TAC2.0 vanuit een functioneel standpunt beschreven. Deze bagage is noodzakelijk ter voorbereiding van de testscenario's en hun implementatie.
 
 % TODO: Vul hier aan voor je eigen hoofstukken, één of twee zinnen per hoofdstuk
 

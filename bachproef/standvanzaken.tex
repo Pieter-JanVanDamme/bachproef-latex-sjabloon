@@ -7,7 +7,7 @@
 
 % Pas na deze inleidende paragraaf komt de eerste sectiehoofding.
 
-Dit onderzoek heeft als doel om, uit drie kandidaten, één end-to-end testing framework aan te duiden dat het meest geschikt is voor de use case van Colruyt Group, zoals beschreven in het voorgaande hoofdstuk. Deze drie kandidaat-frameworks zijn de volgende:
+Dit onderzoek heeft als doel om, uit drie kandidaten, één end-to-end testing framework aan te duiden dat het meest geschikt is voor de use case van Colruyt Group, zoals beschreven in het voorgaande hoofdstuk. Deze drie kandidaat-frameworks, gekozen door het ontwikkelingsteam, zijn de volgende:
 
 \begin{enumerate}
     \item Protractor
@@ -15,7 +15,7 @@ Dit onderzoek heeft als doel om, uit drie kandidaten, één end-to-end testing f
     \item UFT
 \end{enumerate}
 
-In dit hoofdstuk worden eerst de principes van een robuuste testarchitectuur besproken. Dit om de nodige context te geven voor de drie kandidaat-frameworks, die daarna besproken worden. Ten slotte worden drie zogeheten ``Behavior Driven Development'' (BDD) frameworks onder de loep genomen. Deze frameworks zijn een extra laag bovenop een testing framework en maken het mogelijk acceptatietesten in quasi natuurlijke taal te schrijven, wat de implementatie versnelt (\cite{Diepenbeck2014}).
+In dit hoofdstuk worden eerst de principes van een robuuste testarchitectuur besproken. Dit om de nodige context te geven voor de drie kandidaat-frameworks, die daarna besproken worden.
 
 \section{Testing Architectuur}
 
@@ -372,7 +372,7 @@ UFT verschilt op een aantal belangrijke punten met Protractor en Cypress:
     \item Ten vierde biedt UFT twee interfaces voor het schrijven van tests. De eerste is de \textbf{``expert view''} die de gebruiker de broncode — UFT gebruikt VBScript als scripting taal \autocite{Rajkumar2017} — van een test laat editeren. De tweede is de \textbf{``keyword view''}: een grafische user interface die het niet-technische testers mogelijk maakt testen te schrijven \autocite{Guru99WhatIsQTPUFT}.
 \end{itemize}
 
-Het softwarepakket is gemakkelijker in gebruik dan Protractor en Cypress, vooral dankzij de keyword view en de op iconen gebaseerde user interface. De software kan gebruikt worden bij het automatiseren van testen van allerlei soorten client-server applicaties (inclusief mobiele toepassingen) en de gebruiker geniet bovendien van full support bij HP. Daartegenover staat dat UFT enkel beschikbaar is op Windows, dat de licentiëring vrij kostelijk is, en dat het uitvoeren van testen relatief lang duurt doordat het de CPU en het RAM zwaar belast. \autocite{TutorialspointQTPQuickGuide,Arvy2011,Guru99SeleniumUFTDifference,Michaeli2016}
+Het softwarepakket is gemakkelijker in gebruik dan Protractor en Cypress, vooral dankzij de keyword view en de op iconen gebaseerde user interface. De software kan gebruikt worden bij het automatiseren van testen van allerlei soorten client-server applicaties (inclusief mobiele toepassingen) en de gebruiker geniet bovendien van full support bij HP. Daartegenover staat dat UFT enkel beschikbaar is op Windows, dat de licentiëring vrij duur is, en dat het uitvoeren van testen relatief lang duurt doordat het de CPU en het RAM zwaar belast. \autocite{TutorialspointQTPQuickGuide,Arvy2011,Guru99SeleniumUFTDifference,Michaeli2016}
 
 UTF testen bestaan uit \textbf{``acties''}, die kunnen worden hergebruikt wat modulariteit promoot. Zulke acties zijn elementaire handelingen zoals 'log in', 'schrijf en stuur email' en 'log uit'. Een test is met andere woorden een opeenvolging van verschillende acties die uitgevoerd worden, met verschillende parameters voor individuele testen. \autocite{TutorialspointQTPQuickGuide,Guru99ActionsInQTPUFT}
 
@@ -426,16 +426,30 @@ Het softwarepakket van HP biedt ondersteuning voor zowel data driven, keyword dr
 
 \subsection{Behavior Driven Development Frameworks}
 
-\lipsum[9]
+De hedendaagse test developer zal zonder twijfel in aanraking komen met de zogeheten ``Behavior Driven Development'' (BDD) frameworks. Deze frameworks zijn een extra laag bovenop een testing framework en maken het mogelijk acceptatietesten in quasi natuurlijke taal te schrijven, wat de implementatie versnelt. \autocite{Diepenbeck2014}
 
-\subsubsection{Mocha}
+Dit onderwerp valt buiten het bereik van deze verhandeling, doch hierbij een korte toelichting.
 
-\lipsum[8-9]
+Behavior Driven Development (BDD) is een aftakking van Test Driven Development (TDD) die streeft naar een gemeenschappelijke woordenschat tussen alle betrokken partijen bij softwareontwikkeling — van technische tot domeinexperts \autocite{Elliott2019}. Deze woordenschat kan vervolgens gebruikt worden om testen te schrijven als user stories, zoals volgende voorbeeld van Elliott illustreert:
 
-\subsubsection{Jasmine \& Karma}
+\begin{minted}[
+linenos,
+breaklines
+]
+{Gherkin}
+Story: Transfers change balances
 
-\lipsum[8-9]
+As a wallet user
+In order to send money
+I want wallet balances to update
 
-\subsubsection{Cucumber}
+Given that I have $40 in my balance
+And my friend has $10 is their balance
+When I transfer $20 to my friend
+Then I should have $20 in my balance
+And my friend should have $30 in their balance.
+\end{minted}
 
-\lipsum[8-9]
+Dit voorbeeld werd geschreven in Gherkin, de taal die door het \textbf{Cucumber} framework gebruikt wordt voor het definiëren van applicatiegedrag in een eenvoudige schrijftaal. Men kan deze definities dan vertalen naar een meer gangbare taal (zoals JavaScript) voor het uitvoeren, ofwel kan men de pseudotaal implementeren als een \emph{domain specific language} (DSL). \autocite{Elliott2019}.
+
+Andere gekende BDD frameworks, naast Cucumber, zijn onder andere \textbf{Jasmine} — die standaard door Protractor ondersteund wordt — en \textbf{Mocha} — dat bovenop Node.js draait. \autocite{Singh2015}.
