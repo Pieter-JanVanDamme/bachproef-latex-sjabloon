@@ -7,7 +7,7 @@
 
 Het checkoutsysteem van Colruyt Group, \textbf{FVS} (``filiaalverkoopsysteem''), bestaat uit een verscheidenheid aan individuele componenten en is verwoven met zo goed als elk domein binnen de firma — gaande van marketing en customer management tot herbevoorrading en accountancy. Een grondige kennis van dit systeem, en in het bijzonder de werking van de kassa vanuit het perspectief van de kassabediende, is dan ook onontbeerlijk voor dit onderzoek.
 
-\section{TAC Hardware}
+\section{Hardware}
 
 Kassabedienden en verkopers in de filialen van Colruyt, Colruyt France, OKay, OKay City, Bio-Planet, Dreamland, Dreambaby, en Colruyt Group Spar zijn kennen het checkoutsysteem vooral als ``de \textbf{TAC}''. ``TAC'' komt van het Engelse woord ``tactile'' en verwijst naar het feit dat het scherm voornamelijk bediend wordt door er op te tikken met de vingers.
 
@@ -43,10 +43,6 @@ Een TAC opstelling is voorzien van enkele randapparaten (``peripherals''), afhan
     \item \textbf{Betaalterminal} — laat betalingen met debet-, krediet-, en maaltijdcheque kaarten toe. Klanten die met een interne betaalkaart (Xtrakaart met betaalfunctie, Colruytkaart) betalen, gebruiken de terminal ook om hun geheime code in te tikken.
     \item \textbf{Geldlade} — PTAC en MTAC/KTAC configuraties sturen ook de geldlade aan, die ze kunnen openen en wiens sluiting ze ook kunnen detecteren.
 \end{itemize}
-
-\subsection{Gebruikersinterface}
-
-%%%TODO
 
 \section{Systeemarchitectuur}
 
@@ -86,10 +82,58 @@ Deze middleware en services worden aangeroepen door de TAC frontend om diverse t
 
 Tot slot runt de filiaalserver ook een databank, die voornamelijk gebruikt wordt door het FVS systeem. Zoals figuur \ref{fig:FVSDetail} suggereert, zijn er nog andere toepassingen die gebruik maken van de applicatie server en de databank die zich op de filiaalserver bevinden. Dit zijn voornamelijk winkelapplicaties die hier niet verder besproken worden.
 
-\section{Functionaliteiten}
+\section{Gebruikersinterface}
 
-Colruyt Group is een sterk procesgerichte organisatie; 
+De gebruikersinterface van TAC2.0 werd ontworpen met continuïteit als het belangrijkste criterium. Om die reden is de gebruikersinterface en bijhorende user experience design grotendeels dezelfde als die van de oude TAC.
 
-Registreren en afhandelen van klantenaankoop < Verkopen van goederen < Verkoop
+\begin{figure}%
+    \centering
+    \subfloat{{\includegraphics[width=6cm]{img/func-omsch/CLP-CTAC-ArtikelMetLeeggoedEnKorting.PNG} }}%
+    \qquad
+    \subfloat{{\includegraphics[width=6cm]{img/func-omsch/CLP-PTAC-BeginBetalen.PNG} }}%
+    \caption{Links: CTAC interface nadat een artikel met leeggoedwaarde werd toegevoegd en een percentkorting werd toegekend. Rechts: PTAC interface aan het begin van het betalingsproces. \scriptsize Copyright~\copyright~Colruyt Group Services nv}%
+    \label{fig:ctac-ptac-ui}%
+\end{figure}
 
-speciale barcodes
+Figuur \ref{fig:ctac-ptac-ui} toont de belangrijkste schermen van de TAC2.0 frontend: het artikelenoverzicht op de CTAC en het betalingsoverzicht op de PTAC. Merk op dat deze specifieke beelden afkomstig zijn van een MTAC opstelling; een aparte CTAC en PTAC opstelling hebben dezelfde layout, m.u.v. kleine verschillen tussen de retailformules onderling.
+
+\subsection{CTAC}
+
+Figuur \ref{fig:Ctac-Aangeduid} toont de verschillende onderdelen van het basisscherm van de CTAC opstelling:
+
+\begin{enumerate}
+    \item De \emph{TransactionListComponent} \textbf{(1)} toont een overzicht van de geregistreerde transacties voor de huidige rekening, waaronder artikelen — met hun eenheidsprijs, hoeveelheid (of gewicht), totale prijs, en eventuele kortingen — klantenkaarten, kortingsbonnen, geldopnames etc. Transacties kunnen geannuleerd worden met de rode knop.
+    \item De \emph{ArticleNumberComponent} \textbf{(2)} laat toe artikelen te registreren, aan de hand van een barcode of door het intern artikelnummer manueel in te tikken gebruik makende van het numeriek toestenbord. Hier kan ook de hoeveelheid (of het gewicht) aangepast worden, kan een speciale prijs toegekend worden, en kan een korting (procentueel of als bedrag) toegekend worden.
+    \item Het numeriek toetsenbord \textbf{(3)} is deel van de \emph{XTacStartUpComponent} en dus altijd beschikbaar, ook op het inlogscherm.
+    \item De \emph{SaleActionButtonsComponent} \textbf{(4)} geeft verschillende opties, afhankelijk van het winkeltype. In Colruyt hebben we de mogelijkheid factuurgegevens toe te voegen, een geldopname in te geven, een artikel als retour te registreren, of een globale korting toe te kennen.
+    \item De \emph{LanguageButtonsComponent} \textbf{(5)} geeft aan in welke taal het kasticket van de klant geprint zal worden. Elke winkel heeft een standaardtaal, die manueel of middels een klantenkaart gewijzigd kan worden.
+    \item De \emph{SaleButtonsComponent} \textbf{(6)} bevat de knoppen om de rekening af te sluiten of om een subrekening aan te maken. Op een CTAC opstelling zal de ``betalen'' knop zorgen voor de totalisatie van de rekening, waarna de operator uitgelogd wordt en de rekening kan oproepen op een PTAC toestel. Op een MTAC opstelling krijgt de gebruiker onmiddellijk het betaalscherm te zien. Subrekeningen maken het mogelijk een kar te splitsen — en dus aparte kastickets te krijgen — maar kunnen meestal wel samen betaald worden.
+    \item De overige componenten rechtsboven \textbf{(7)} geven informatie over de aangelogde operator (operatornummer \& roepnaam), de toestelconfiguratie, en de softwareversie.
+\end{enumerate}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[scale=0.7]{img/func-omsch/CLP-CTAC-Aanduidingen.jpg}
+    \caption{Basisscherm van het CTAC-gedeelte van de applicatie, met aanduiding van de verschillende onderdelen. \scriptsize Copyright~\copyright~Colruyt Group Services nv}
+    \label{fig:Ctac-Aangeduid}
+\end{figure}
+
+\subsection{PTAC}
+
+De verschillende componenten in het hoofdscherm van de PTAC opstelling worden in figuur \ref{fig:Ctac-Aangeduid} aangeduid. De belangrijkste componenten zijn:
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[scale=0.7]{img/func-omsch/CLP-PTAC-Aanduidingen.jpg}
+    \caption{Basisscherm van het PTAC-gedeelte van de applicatie, met aanduiding van de verschillende onderdelen. \scriptsize Copyright~\copyright~Colruyt Group Services nv}
+    \label{fig:Ptac-Aangeduid}
+\end{figure}
+
+\begin{enumerate}
+    \item De \emph{CashMovementListComponent} \textbf{(1)} geeft een overzicht van de reeds uitgvoerde betalingstransacties alsook het totaal te betalen en het nog openstaande bedrag. Eenmaal de rekening volledig betaald werd, ziet men hier ook een eventuele geldteruggave of geldopname.
+    \item De \emph{CashMovementButtons} \textbf{(2)} geven de mogelijk betaalmiddelen weer. Men kan betalen met de betaalfunctie van de Xtrakaart of Colruytkaart, met cash, met een elektronisch betaalmiddel (bankkaart, maaltijdcheques etc.) of met MPAY. Minder gangbare betaalmiddelen zijn toegankelijk via de knop ``Betaalmiddelen...''.
+    \item De \emph{CashComponent} \textbf{(3)} is beschikbaar eenmaal een betaalmiddel gekozen werd. Hier kan men het bedrag van de betaling bepalen — ofwel het saldo van de rekening, ofwel een manueel ingevoerd deel daarvan. Soms staat hier bijkomende informatie: figuur \ref{fig:Ptac-Aangeduid} toont een betaling met een geschenkkaart, die ook het saldo en het maximaal te gebruiken bedrag voor de betaling toont.
+    \item De \emph{PaymentSubjectsOverviewComponent} \textbf{(4)} toont de te betalen rekening met hun totaal en eventueel relevante informatie — bijvoorbeeld als het gaat om een Factuur en/of als er een Xtra/Colruyt betaalkaart aangeboden werd voor de rekening.
+    \item De \emph{} \textbf{(5)}
+    \item De \emph{PaymentButtonsComponent} \textbf{(6)} bevat de knop die toelaat de betaling stop te zetten en de operator af te loggen op een PTAC opstelling. Op een MTAC opstelling laat deze knop toe terug te keren naar het artikelenoverzicht en krijgt de knop de benaming ``Terug''. Eenmaal een niet-omkeerbare betaling plaatsvond — bijvoorbeeld een betaling met de bankkaart — is deze knop uitgeschakeld.
+\end{enumerate}
