@@ -19,23 +19,34 @@ De literatuurstudie geeft — naast een bondig doch volledig overzicht van de gr
 
 Het andere deel van het voorbereidend werk voor de performantietesten is de analyse van de werking van de UAT (application under test), die te vinden is in bijlage \ref{ch:functionele-omschrijving}. Aan de hand van deze functionele omschrijving is het mogelijk representatieve test cases te kiezen voor die testen.
 
-Zoals ook blijkt uit de literatuurstudie vereist een test automatisatiesysteem een weloverwogen architectuur die dient als fundament voor het systeem. De opbouw van deze basis eist een aanzienlijke investering van tijd en voldoende bekendheid met het framework. Om die reden wordt voor de performantietesten gebruik gemaakt van het bestaande werk van Thanuja Mudiyala (Test Automation Lead bij Colruyt Group Services) voor UFT en van Kenneth Aerens (Angular coach bij Colruyt Group Services) voor Cypress. De bestaande testen worden aangepast zodanig dat de stappen van elke test case precies dezelfde zijn. De implementatie van Protractor wordt volledig door de auteur gerealiseerd.
+Zoals ook blijkt uit de literatuurstudie vereist een test automatisatiesysteem een weloverwogen architectuur die dient als fundament voor het systeem. De opbouw van deze basis eist een aanzienlijke investering van tijd en voldoende bekendheid met het framework — de simulatie van randapparaten an sich is reeds een waardige kandidaat als onderwerp voor een verhandeling.
 
-%% Cypress en UFT testen geschreven door anderen; raamwerk en simulatie van de peripherals is een enorme onderneming
+Om die reden wordt voor de performantietesten gebruik gemaakt van het bestaande werk van Thanuja Mudiyala (Test Automation Lead bij Colruyt Group Services) voor UFT en van Kenneth Aerens (Angular coach bij Colruyt Group Services) voor Cypress. De bestaande testen worden aangepast zodanig dat de stappen van elke test case precies dezelfde zijn. De implementatie van Protractor wordt volledig door de auteur gerealiseerd.
 
-De 5 gekozen test cases zijn als volgt:
+De 5 gekozen test cases die in elk framework worden uitgevoerd, zijn als volgt:
 
 \begin{enumerate}
-    \item tekst
-    \item tekst
-    \item tekst
-    \item tekst
-    \item tekst
+    \item \emph{Operator aanloggen}
+    \item \emph{Artikel toevoegen}
+    \item \emph{Handscanner gebruiken}
+    \item \emph{Factuur maken}
+    \item \emph{Betaling registreren}
 \end{enumerate}
 
-.......... Wat meten we?
+%% Gewichtsregistraties werden uitgesloten van de testen omdat de certifiëring van de weegschaal nog niet op punt stond.
 
-Tijdens de performantietesten wordt gebruik gemaakt van Windows \textsuperscript{\textregistered} Performance Monitor (ook gekend als ``PerfMon'') om de gekozen metrieken te loggen.
+Elk framework wordt geconfigureerd zodanig dat deze 5 testen na elkaar worden uitgevoerd, zoals ook het geval zou zijn bij het normale gebruik van het test automatisatiesysteem. Het voorbereidende werk hiervoor, alsook de relevante details van de uitvoering, worden in hoofdstuk \ref{ch:corpus} besproken. Ook worden eigenschappen en mogelijkheden van de frameworks getoetst aan de requirement die door Colruyt Group vooropgesteld worden, zie sectie \ref{sec:meth-requirements}.
+
+Tijdens de performantietesten wordt gebruik gemaakt van Windows \textsuperscript{\textregistered} Performance Monitor (ook gekend als ``PerfMon'') om de performantie van de frameworks te meten. Om dit te bereiken worden de processen die relevant zijn voor het uitvoeren van de testen in elk framework geïdentificeerd. Van deze processen wordt tijdens de uitvoer van de testen volgende metrieken gelogd:
+
+\begin{enumerate}
+    \item \emph{Elapsed Time}: de verlopen tijd sinds het starten van het proces, in seconden.
+    \item \emph{\% Processor Time}: het aandeel van de verlopen tijd die de processor aan de processen besteed (\cite{Tarra2014}).
+    \item \emph{Private Bytes}: de totale hoeveelheid geheugen dat aan de processen gealloceerd wordt, in bytes (\cite{Hudek2017}).
+    \item \emph{Virtual Bytes}: de totale hoeveelheid geheugen die effectief door de processen benut wordt, in bytes (\cite{Hudek2017}).
+    \item \emph{Thread Count}: het aantal processor threads die door de processen gebruikt worden (\cite{Satran2018}).
+    \item \emph{Handle Count}: het aantal toegangen tot systeembronnen die de processen vasthouden.
+\end{enumerate}
 
 %% Gebruik van PerfMon:
 %% 1. Run... perfmon.exe
@@ -47,7 +58,32 @@ Tijdens de performantietesten wordt gebruik gemaakt van Windows \textsuperscript
 %% 7. Gebruik cd om naar de directory van [YourDataCollectorSet] te gaan
 %% 8. Zet .blg naar .csv om met commando 'relog MyMonitorLog.blg -f csv -o MyMonitorLog.csv'
 
-............. De performantietesten geven eveneens inzicht in hoeveel (grondwerk, hoe moeilijk te schrijven)
+De gedetailleerde resultaten van deze testen zijn te vinden in bijlage \ref{ch:resultaten} en worden vervolgens onderworpen aan statistische analyse in sectie \ref{sec:analyse-performantietesten}. In sectie \ref{sec:resultaten-requirements} wordt vervolgens besproken in welke mate de frameworks onderling aan de in sectie \ref{sec:meth-requirements} vooropgestelde requirements voldoen.
 
-Samen geven deze onderdelen een objectief beeld van de voor- en nadelen van de frameworks
+Het onderzoek wordt ten slotte afgesloten met de conclusie. Dit hoofdstuk bevat het advies dat aan Colruyt Group voorgelegd wordt als antwoord op de onderzoeksvraag.
 
+\section{Requirementsanalyse}
+\label{sec:meth-requirements}
+
+De requirementsanalyse is een vast onderdeel voor een vergelijkende studie. De voor dit onderzoek geldende requirements werden vastgelegd op 5 maart 2020 met input van Koen Stockman (applicatiemanager en co-promotor van deze verhandeling) en Kenneth Aerens (Angular coach voor Colruyt Group) en kan men hieronder vinden. De requirements werden opgesplitst in functionele\footnote{Functionele requirements zijn de eisen die gesteld worden aan de beschikbare functionaliteiten en objectieve eigenschappen van een systeem} en niet-functionele\footnote{Niet-functionele requirements zijn kwaliteitseisen die gekoppeld worden aan een zinvolle metriek.} vereisten.
+
+\textbf{Functionele requirements}:
+\begin{itemize}
+    \item \emph{Moet} compatibel zijn met Angular en Angular applicaties
+    \item \emph{Moet} compatibel zijn met de Chrome browser
+    \item \emph{Moet} de mogelijkheid bieden randapparaten te simuleren
+    \item \emph{Moet} auto-synchronisatie (automatisch wachten) aanbieden
+    \item \emph{Moet} hergebruik van componenten en handelingen mogelijk maken
+    \item Vereist \emph{idealiter} geen (of toch zo weinig mogelijk) externe technologieën zoals een losstaande web driver.
+    \item Is \emph{idealiter} integreerbaar in Visual Studio Code, de IDE\footnote{Integrated Development Environment} die Colruyt Group gebruikt voor Angular ontwikkeling.
+    \item Ondersteunt \emph{idealiter} meerdere assertion libraries.
+    \item Gebruikt \emph{idealiter} een op Java of JavaScript gebaseerde taal voor de programmatie.
+\end{itemize}
+
+\textbf{Niet-functionele requirements}:
+\begin{itemize}
+    \item \emph{Moet} (relatief) goedkoop zijn in zowel opzet als onderhoud
+    \item \emph{Moet} voldoende performant zijn om een groot aantal testen snel te kunnen verwerken
+    \item \emph{Moet} een (relatief) vlakke leercurve hebben.
+    \item Blijft in de toekomst \emph{idealiter} ondersteund door de ontwikkelaar\footnote{Colruyt Group maakte tot voor kort uitgebreid gebruik van de programmeertaal ObjectStar, die intussen niet meer ondersteund was. Het herschrijven van alle applicaties en systeem die gebruikt maakten van ObjectStar was een enorme kost die Colruyt niet opnieuw wil maken.}
+\end{itemize}

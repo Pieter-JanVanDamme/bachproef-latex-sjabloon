@@ -1,0 +1,433 @@
+%%=============================================================================
+%% Cypress Code
+%%=============================================================================
+
+\chapter{\IfLanguageName{dutch}{Cypress Test Cases}{Cypress Test Cases}}
+\label{ch:code-cypress}
+
+\section{Operator Aanloggen}
+
+\begin{minted}[
+linenos,
+breaklines
+]
+{JavaScript}
+Feature: Authenticate
+
+@focus
+Scenario Outline: : Authenticate CTAC operator
+Given Open xtac as <tacType> <tacId> <tacSubType>
+When I click on button Ctac
+And I authenticate as operator <operator> and password <password>
+Then Url should be "xtac/ctac/transaction"
+Examples:
+| tacType | tacId | tacSubType | operator | password |
+| CTAC    | 1     |            | 10       | false    |
+| KTAC    | 1     |            | 11       | false    |
+| MTAC    | 1     |            | 12       | false    |
+
+#      | MTAC    | 3     | A          | 13       | false     |
+#      | MTAC    | 4     | B          | 14       | false    |
+
+#      | MTAC    | 4     | aspar      | 31       | false    |
+#      | ATAC    | 2     | codifr     | 99       | false    |
+#      | CTAC    | 2     | codifr     | 99       | false    |
+#      | KTAC    | 2     | codifr     | 99       | false    |
+#      | MTAC    | 2     | codifr     | 99       | false    |
+
+
+#  @focus
+Scenario Outline: : Authenticate PTAC operator
+Given Open xtac as <tacType> <tacId> <tacSubType>
+When I click on button Ptac
+And I authenticate as operator <operator> and password <password>
+Then Url should be "xtac/ptac/payment"
+
+Examples:
+| tacType | tacId | tacSubType | operator | password |
+| PTAC    | 1     |            | 20       | false    |
+| KTAC    | 1     |            | 21       | false    |
+| MTAC    | 1     |            | 99       | false    |
+#      | MTAC    | 3     | dreamland  | 99       | 11       |
+#      | MTAC    | 4     | spar       | 99       | false    |
+#      | MTAC    | 4     | aspar      | 99       | false    |
+#      | ATAC    | 2     | codifr     | 99       | false    |
+#      | PTAC    | 2     | codifr     | 99       | false    |
+#      | KTAC    | 2     | codifr     | 99       | false    |
+#      | MTAC    | 2     | codifr     | 99       | false    |
+\end{minted}
+
+\section{Artikel Toevoegen}
+
+\begin{minted}[
+linenos,
+breaklines
+]
+{JavaScript}
+
+
+
+
+
+
+Feature: Add article to transaction
+
+@focus
+Scenario Outline: I follow the happy add article flow
+Given Open xtac as <tacType> <tacId> <tacSubType>
+When I authenticate as operator <operatorId> and password <password> on "Ctac"
+Then Url should be "xtac/ctac/transaction"
+And TransactionList should have <totalColumns> columns
+And TransactionList should have 5 rows
+And Buttons <additionButtons> should be disabled
+And Button <subBill> should be disabled
+When I click on button "BUTTON.ARTICLE_NR"
+Then Url should be "xtac/ctac/transaction/article-details"
+And Button-list ".button-salesActionButtons" should be disabled
+When I add article 5006
+Then Input <field> should have value <field_value>
+And Button <subBill> should be enabled
+When I click on button "BUTTON.ARTICLE_NR"
+Then Buttons <additionButtons> should be disabled
+And Button "BUTTON.PAY" should be disabled
+And Input article_nr should have value ""
+And TransactionList row 4 column 2 should look like <column3>
+And TransactionList row 4 column 1 should look like <column2>
+When I add article 5006
+Then Input <field> should have value <field_value>
+And Button <subBill> should be enabled
+When I click on button "BUTTON.ARTICLE_NR"
+Then Input article_nr should have value ""
+And Buttons <additionButtons> should be disabled
+And TransactionList row 3 column 2 should look like <column3>
+And TransactionList row 3 column 1 should look like <column2>
+And TransactionList row 4 column 2 should look like <column3>
+And TransactionList row 4 column 1 should look like <column2>
+
+
+Examples:
+| tacType | tacId | tacSubType | operatorId | password | field            | field_value | totalColumns | column2                    | column3 | subBill           | additionButtons                                 |
+| CTAC    |  1    |            | 99         | false    | article_quantity | "1"         | 3            | "€ 6,89  \\\| tot: € 6,89" | "1 * 1" | "BUTTON.SUB_BILL" | "BUTTON.SPECIAL_PRICE, BUTTON.PERCENT_DISCOUNT" |
+| MTAC    |  1    |            | 98         | false    | article_quantity | "1"         | 3            | "€ 6,89  \\\| tot: € 6,89" | "1 * 1" | "BUTTON.SUB_BILL" | "BUTTON.SPECIAL_PRICE, BUTTON.PERCENT_DISCOUNT" |
+| KTAC    |  1    |            | 81         | false    | article_quantity | "1"         | 3            | "€ 6,89  \\\| tot: € 6,89" | "1 * 1" | "BUTTON.SUB_BILL" | "BUTTON.SPECIAL_PRICE, BUTTON.PERCENT_DISCOUNT" |
+#      | MTAC    |  3    | dreamland  | 99         | 11       | article_quantity   | "1"         | 3            | "€ 6,89"                   | "1"     | "BUTTON.SUB_BILL" | "BUTTON.PERCENT_DISCOUNT"                       |
+#      | MTAC    |  3    | dreamland  | 99         | 11       | article_unit_price | "6,89"      | 3            | "€ 6,89"                   | "1"     | "BUTTON.SUB_BILL" | "BUTTON.PERCENT_DISCOUNT"                       |
+#      | MTAC    |  4    | spar       | 99         | false    | article_quantity   | "1"         | 3            | "€ 6,89  \\\| tot: € 6,89" | "1 * 1" | "BUTTON.PARKING"  | "BUTTON.PERCENT_DISCOUNT"                       |
+#      | KTAC    |  2    | codifr     | 99         | false    | article_quantity   | "1"         | 3            | "€ 6,89  \\\| tot: € 6,89" | "1 * 1" | "BUTTON.SUB_BILL" | "BUTTON.PERCENT_DISCOUNT"                       |
+#      | CTAC    |  2    | codifr     | 99         | false    | article_quantity   | "1"         | 3            | "€ 6,89  \\\| tot: € 6,89" | "1 * 1" | "BUTTON.SUB_BILL" | "BUTTON.PERCENT_DISCOUNT"                       |
+\end{minted}
+
+\section{Handscanner Gebruiken}
+
+\begin{minted}[
+linenos,
+breaklines
+]
+{JavaScript}
+Feature: Scan an article
+
+@focus
+Scenario Outline: I scan an article with the hand scanner
+Given Open xtac as <tacType> <tacId> <tacSubType>
+When I authenticate as operator <operatorId> and password <password> on "Ctac"
+Then Url should be "xtac/ctac/transaction"
+When I scan article 5412476144501
+And I scan article 5412476042654
+Then Url should be "xtac/ctac/transaction/article-details"
+And Input <field> should have value <field_value>
+And TransactionList row 4 column 2 should look like <column3>
+And TransactionList row 4 column 1 should look like <column2>
+When I click on button BUTTON.ARTICLE_NR
+Then TransactionList row 3 column 2 should look like <column3>
+And TransactionList row 3 column 1 should look like <column2>
+And TransactionList row 4 column 2 should look like "1 * 1"
+And TransactionList row 4 column 1 should look like "€ 7,41 | tot: € 7,41"
+
+
+Examples:
+| tacType | tacId | tacSubType | operatorId | password | field            | field_value | column2                    | column3 | subBill           | additionButtons                                 |
+| CTAC    |  1    |            | 5          | false    | article_quantity | "1"         | "€ 1,96  \\\| tot: € 1,96" | "1 * 1" | "BUTTON.SUB_BILL" | "BUTTON.SPECIAL_PRICE, BUTTON.PERCENT_DISCOUNT" |
+#      | MTAC    |  1    |            | 6          | false    | article_quantity | "1"         | "€ 1,96  \\\| tot: € 1,96" | "1 * 1" | "BUTTON.SUB_BILL" | "BUTTON.SPECIAL_PRICE, BUTTON.PERCENT_DISCOUNT" |
+#      | KTAC    |  1    |            | 7          | false    | article_quantity | "1"         | "€ 1,96  \\\| tot: € 1,96" | "1 * 1" | "BUTTON.SUB_BILL" | "BUTTON.SPECIAL_PRICE, BUTTON.PERCENT_DISCOUNT" |
+#      | MTAC    |  3    | dreamland  | 99         | 11       | article_quantity   | "1"         | "€ 6,89"                   | "1"     | "BUTTON.SUB_BILL" | "BUTTON.PERCENT_DISCOUNT"                       |
+#      | MTAC    |  3    | dreamland  | 99         | 11       | article_unit_price | "6,89"      | "€ 6,89"                   | "1"     | "BUTTON.SUB_BILL" | "BUTTON.PERCENT_DISCOUNT"                       |
+#      | MTAC    |  4    | spar       | 99         | false    | article_quantity   | "1"         | "€ 6,89  \\\| tot: € 6,89" | "1 * 1" | "BUTTON.PARKING"  | "BUTTON.PERCENT_DISCOUNT"                       |
+#      | KTAC    |  2    | codifr     | 99         | false    | article_quantity   | "1"         | "€ 6,89  \\\| tot: € 6,89" | "1 * 1" | "BUTTON.SUB_BILL" | "BUTTON.PERCENT_DISCOUNT"                       |
+#      | CTAC    |  2    | codifr     | 99         | false    | article_quantity   | "1"         | "€ 6,89  \\\| tot: € 6,89" | "1 * 1" | "BUTTON.SUB_BILL" | "BUTTON.PERCENT_DISCOUNT"                       |
+
+
+#  @focus
+Scenario Outline: I scan a supplier coupon with the hand scanner
+Given Open xtac as <tacType> <tacId> <tacSubType> and continue
+When I authenticate as operator <operatorId> and password <password> on "Ctac"
+Then Url should be "xtac/ctac/transaction"
+When I scan article <article1>
+Then Url should be "xtac/ctac/transaction/article-details"
+When I scan article <article2>
+Then Url should be "xtac/ctac/transaction/article-details"
+And I <get_warning> get a warning <warn_msg>
+When I <get_warning> choose option number 1
+Then Input <field> should have value <field_value>
+And TransactionList row 4 column 2 should look like <column3>
+And TransactionList row 4 column 1 should look like <column2>
+When I click on button BUTTON.ARTICLE_NR
+Then TransactionList row 3 column 2 should look like <column3>
+And TransactionList row 3 column 1 should look like <column2>
+And TransactionList row 4 column 0 should look like <column1>
+And TransactionList row 4 column 0 should look like <column1-info>
+
+Examples:
+| tacType | tacId | tacSubType | operatorId | password | article1      | article2                      | get_warning | warn_msg                                       | field         | field_value                              | column1           | column1-info      | column2                    | column3 |
+#      | CTAC    |  1    |            | 5          | false    | 5412476144501 | 9826042110009 |             | "GRATIS leveranciersbon" | article_name  | "Leveranciersbon"                        | "Leveranciersbon" | "1 stuk gratis"   | "€ 1,96  \\\| tot: € 1,96" | "1 * 1" |
+#      | CTAC    |  1    |            | 5          | false    | 5412476144501 | 9820094740306 | don't       |                          | article_name  | "Leveranciersbon       Bedrag: € -0,30"  | "Leveranciersbon" | "Bedrag: € -0,30" | "€ 1,96  \\\| tot: € 1,96" | "1 * 1" |
+#      | CTAC    |  1    |            | 5          | false    | 5412476144501 | 9820094740757 | don't       |                          | article_name  | "Leveranciersbon       Bedrag: € -0,75"  | "Leveranciersbon" | "Bedrag: € -0,75" | "€ 1,96  \\\| tot: € 1,96" | "1 * 1" |
+#      | CTAC    |  1    |            | 5          | false    | 5412476144501 | 9820094743758 |             | "Bedrag leveranciersbon" | article_name  | "Leveranciersbon       Bedrag: € -3,75"  | "Leveranciersbon" | "Bedrag: € -3,75" | "€ 1,96  \\\| tot: € 1,96" | "1 * 1" |
+| CTAC    |  1    |            | 5          | false    | 5413149191228 | ]C12555400100000002\"39021000 |             | "Bedrag leveranciersbon  \\\| Bedrag: € -10,00" | article_name  | "Leveranciersbon       Bedrag: € -3,75"  | "Leveranciersbon" | "Bedrag: € -3,75" | "€ 1,96  \\\| tot: € 1,96" | "1 * 1" |
+
+#  @focus
+Scenario: I scan a supplier coupon that needs manual reduction input
+Given Open xtac as CTAC 1  and continue
+When I authenticate as operator 14 and password false on "Ctac"
+Then Url should be "xtac/ctac/transaction"
+When I scan article 5412476144501
+Then Url should be "xtac/ctac/transaction/article-details"
+When I scan article 9820094743758
+Then Url should be "xtac/ctac/transaction/article-details"
+And I  get a warning "Bedrag leveranciersbon"
+When I  choose option number 2
+Then Input article_name should have value "Leveranciersbon"
+And Input article_reduction_price should have value ""
+When I enter reduction 2,00
+Then Input article_reduction_price should have value "2,00"
+When I click on button BUTTON.ARTICLE_NR
+Then TransactionList row 4 column 0 should look like "Leveranciersbon"
+And TransactionList row 4 column 0 should look like "Bedrag: € -2,00"
+And TransactionList row 4 column 2 should look like "1 * 1"
+\end{minted}
+
+\section{Factuur Maken}
+
+\begin{minted}[
+linenos,
+breaklines
+]
+{JavaScript}
+import { authenticate } from '../../support/authenticate/user';
+import { input } from '../../support/input';
+import { MODAL } from '../../support/modal/button';
+import { clickButton } from '../../support/step_definitions/click-on-button';
+import { INVOICE } from './invoice';
+
+describe('Discount article', () => {
+    beforeEach(() => {
+        cy.visit('?tacType=ctac&tacId=1');
+        authenticate('1', undefined, 'ctac1');
+        clickButton(INVOICE.button);
+        });
+
+    it('should select the first control again', () => {
+        clickButton(INVOICE.search.streetPostal);
+
+        input(INVOICE.input.street).hasFocus()
+            .enterValue('KERKSTRAAT').hasValue('KERKSTRAAT')
+            .submit();
+
+        input(INVOICE.input.postalCode).hasError()
+            .enterValue('8500').hasValue('8500').submit();
+
+        clickButton(MODAL.button.back);
+
+        input(INVOICE.input.street).hasFocus();
+
+        clickButton(INVOICE.search.cancel);
+        MODAL.choice.firstCheck();
+
+        clickButton(INVOICE.button);
+
+        input(INVOICE.input.vat).hasFocus().hasValue('BE');
+    });
+
+    it('should not overwrite initial value when switching filters', () => {
+        clickButton(INVOICE.search.phone);
+        input(INVOICE.input.phone).hasFocus().enterValue('222')
+            .submit();
+        clickButton(INVOICE.search.vat);
+
+        input(INVOICE.input.vat).hasFocus().hasValue('BE')
+            .enterValue('A').hasValue('BEA');
+    });
+
+    it('should add the character add the right position', () => {
+        clickButton(INVOICE.search.streetPostal);
+
+        input(INVOICE.input.street).hasFocus()
+            .enterValue('ABCDEF').hasValue('ABCDEF').moveLeft()
+            .enterValue('1').hasValue('ABCDE1F');
+
+        input(INVOICE.input.postalCode).click().hasFocus()
+            .enterValue('8510').hasValue('8510');
+
+        input(INVOICE.input.street).click().hasFocus()
+            .enterValue('FEDCBA').hasValue('FEDCBA').moveLeft()
+            .moveLeft().enterValue('2').hasValue('FEDC2BA')
+            .moveRight().enterValue('1').hasValue('FEDC2B1A');
+
+        input(INVOICE.input.postalCode).click().hasFocus()
+            .hasValue('8510').moveLeft().enterValue('A')
+            .hasValue('A8510');
+
+        input(INVOICE.input.street).click().hasFocus()
+            .hasValue('FEDC2B1A').delete().hasValue('')
+            .enterValue('Z').hasValue('Z');
+
+        input(INVOICE.input.postalCode).click().hasFocus()
+            .hasValue('A8510').moveRight().delete()
+            .hasValue('A851');
+        });
+
+    it('should focus again when switching filters', () => {
+        input(INVOICE.input.vat).hasFocus();
+
+        clickButton(INVOICE.search.streetPostal);
+
+        input(INVOICE.input.street).hasFocus();
+
+        clickButton(INVOICE.search.vat);
+
+        input(INVOICE.input.country).hasNoFocus().hasValue('BE');
+
+        input(INVOICE.input.vat).hasFocus().hasValue('BE');
+    });
+
+    it('Default search should be vat', () => {
+        // TODO test the active filters
+
+        input(INVOICE.input.country).hasNoFocus().hasValue('BE');
+
+        input(INVOICE.input.vat).hasFocus().hasValue('BE')
+            .enterValue('1').hasValue('BE1').hasFocus().submit()
+            .hasError();
+
+        input(INVOICE.input.country).click();
+
+        // wait until the backend request is made to retreive the error
+        cy.wait(1000);
+
+        input(INVOICE.input.country).hasNoFocus();
+
+        input(INVOICE.input.vat).hasError().enterValue('B')
+            .hasValue('B').hasFocus().enterValue('E0206677801')
+            .hasValue('BE0206677801').submit();
+    });
+
+    it('should search on phone number', () => {
+        clickButton(INVOICE.search.phone);
+        // TODO test the active filters
+
+        input(INVOICE.input.phonePrefix).hasNoFocus()
+            .hasValue('32');
+        
+        input(INVOICE.input.phone).hasFocus().enterValue('1')
+            .submit().hasError().enterValue('2').hasValue('2')
+            .hasFocus().enterValue('1345678')
+            .hasValue('21345678').submit();
+    });
+
+    it('should search on street and postal code', () => {
+        clickButton(INVOICE.search.streetPostal);
+
+        // TODO test the active filters
+        input(INVOICE.input.country).hasNoFocus().hasValue('BE');
+        input(INVOICE.input.postalCode).hasNoFocus();
+
+        input(INVOICE.input.street).hasFocus().submit()
+            .hasError().enterValue('K').hasValue('K').hasFocus()
+            .enterValue('ERKSTRAAT').hasValue('KERKSTRAAT')
+            .submit();
+        input(INVOICE.input.postalCode).hasError().submit()
+            .hasError().enterValue('8').hasValue('8').hasFocus()
+            .enterValue('500').hasValue('8500').submit();
+    });
+
+    it('should search on company name', () => {
+        clickButton(INVOICE.search.companyName);
+        // TODO test the active filters
+        input(INVOICE.input.country).hasNoFocus().hasValue('BE');
+        input(INVOICE.input.postalCode).hasNoFocus();
+
+        input(INVOICE.input.companyName).hasFocus().submit()
+            .hasError().enterValue('C').hasValue('C').hasFocus()
+            .enterValue('OLRUYT').submit();
+
+        input(INVOICE.input.postalCode).hasError().submit()
+            .hasError().enterValue('8').hasFocus()
+            .enterValue('500').hasValue('8500').submit();
+    });
+});
+\end{minted}
+
+\section{Betaling Registreren}
+
+\begin{minted}[
+linenos,
+breaklines
+]
+{JavaScript}
+Feature: payment
+
+@focus
+Scenario Outline: I follow the happy payment flow
+Given Open xtac as <tacType> <tacId> <subType>
+When I authenticate as operator <operatorId> and password <password> on "Ptac"
+And I click on button "BUTTON.CASH"
+Then Url should be "xtac/ptac/payment/cash"
+And Button-list ".cash-movement-buttons" should be disabled
+And Button-list ".button-paymentSubject" should be disabled
+And Payment line <lang> 2 total "€ 11,15"
+When I add cash payment "5,00"
+Then Payment line <lang> 0 total "€ 11,14"
+And Payment line <lang> 1 with 1 CASH "€ -5,00"
+And Payment line <lang> 2 to pay "€ 6,14"
+
+And I click on button "BUTTON.CASH"
+And Button-list ".cash-movement-buttons" should be disabled
+And Button-list ".button-paymentSubject" should be disabled
+When I add cash payment "5,00"
+Then Payment line <lang> 0 previous "€ 6,14"
+And Payment line <lang> 1 with 2 CASH "€ -5,00"
+And Payment line <lang> 2 to pay "€ 1,14"
+
+And I click on button "BUTTON.CASH"
+And Button-list ".cash-movement-buttons" should be disabled
+And Button-list ".button-paymentSubject" should be disabled
+When I add cash payment "5,00"
+Then Payment line <lang> 0 previous "€ 1,14"
+And Payment line <lang> 1 with 3 CASH "€ -5,00"
+And Payment line <lang> 2 return "€ -3,85"
+
+When I click on button "caret-up"
+Then Payment line <lang> 0 previous "€ 6,14"
+And Payment line <lang> 1 with 2 CASH "€ -5,00"
+And Payment line <lang> 2 to pay when complete "€ 1,14"
+
+When I click on button "caret-up"
+Then Payment line <lang> 0 total "€ 11,14"
+And Payment line <lang> 1 with 1 CASH "€ -5,00"
+And Payment line <lang> 2 to pay when complete "€ 6,14"
+
+When I click on button "caret-down"
+Then Payment line <lang> 0 previous "€ 6,14"
+And Payment line <lang> 1 with 2 CASH "€ -5,00"
+And Payment line <lang> 2 to pay when complete "€ 1,14"
+
+When I click on button "caret-down"
+Then Payment line <lang> 0 previous "€ 1,14"
+And Payment line <lang> 1 with 3 CASH "€ -5,00"
+And Payment line <lang> 2 return "€ -3,85"
+
+Examples:
+| tacType | tacId | subType | operatorId | password | lang |
+| PTAC    |  1    |         | 60         | false    | nl   |
+#      | MTAC    |  1    |         | 61         | false    | nl   |
+#      | PTAC    |  1    |         | 72         | false    | fr   |
+\end{minted}
