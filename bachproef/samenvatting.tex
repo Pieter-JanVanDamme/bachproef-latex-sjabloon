@@ -17,24 +17,10 @@
 %
 % LET OP! Een samenvatting is GEEN voorwoord!
 
-%%---------- Nederlandse samenvatting -----------------------------------------
-%
-% TODO: Als je je bachelorproef in het Engels schrijft, moet je eerst een
-% Nederlandse samenvatting invoegen. Haal daarvoor onderstaande code uit
-% commentaar.
-% Wie zijn bachelorproef in het Nederlands schrijft, kan dit negeren, de inhoud
-% wordt niet in het document ingevoegd.
-
-\IfLanguageName{english}{%
-\selectlanguage{dutch}
-\chapter*{Samenvatting}
-\lipsum[1-4]
-\selectlanguage{english}
-}{}
 
 %%---------- Samenvatting -----------------------------------------------------
 % De samenvatting in de hoofdtaal van het document
 
 \chapter*{\IfLanguageName{dutch}{Samenvatting}{Abstract}}
 
-\lipsum[1-4]
+Bij elk softwareproject is de keuze voor het gepaste framework één van de belangrijkste factoren in het succes ervan. Dit geldt evenzeer voor test automatisatieprojecten. Colruyt Group ontwikkelt momenteel een nieuwe Angular front-end applicatie voor hun checkoutsysteem en wil ook investeren in test automatisatie. Zij beschikken reeds over een end-to-end testing framework — UFT — maar ondervinden een aantal belangrijke nadelen. De firma overweegt twee andere kandidaten — Protractor en Cypress — en wil advies omtrent het geschikte framework voor hun situatie. Om dit advies te kunnen leveren werden de kandidaat frameworks onderworpen aan een requirementsanalyse enerzijds, en een praktijktest anderzijds. In deze praktijktest werden 5 dezelfde testen in UFT en Cypress uitgevoerd en werd hun performantie gemonitord. De test voor Protractor kon omwille van tijdsgebrek helaas niet gerealizeerd worden. Hieruit bleek dat Cypress de meest geschikte kandidaat is, rekening houdende met alle factoren. Desondanks is er nog ruimte voor verbetering: idealiter zouden alle praktijktesten herhaald worden met een prototype van de applicatie, een gemockte backend en éénzelfde simulator voor de randapparaten. Desondanks geeft dit onderzoek reeds een goed beeld over hoe de frameworks zich tegenover elkaar verhouden. Het advies aan Colruyt Group is dus om voor Cypress te kiezen, met Protractor als tweede keuze.

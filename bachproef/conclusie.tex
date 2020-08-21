@@ -14,7 +14,22 @@
 % Heeft het onderzoek geleid tot nieuwe vragen die uitnodigen tot verder 
 %onderzoek?
 
-%% iets over praktijkonderzoek dat de verschillen tussen de frameworks belicht
+Colruyt Group heeft de keuze tussen 3 heel geschikte frameworks — er is geen verkeerde keuze. Dat gezegd zijnde wordt Colruyt Group aangeraden om te kiezen voor \textbf{Cypress}, met \textbf{Protractor} als tweede keuze.
 
-\lipsum[76-80]
+UFT is weliswaar een robuust framework, maar het heeft een aantaal belangrijke nadelen:
 
+\begin{itemize}
+    \item De hoge licentiekost, die voor een kostenbewuste firma als Colruyt Group niet aantrekkelijk is.
+    \item De steile leercurve. Geen van de programmeurs die de end-to-end testen voor TAC2.0 zullen schrijven, hebben ervaring met UFT. Hen leren werken met het pakket zou dus een bijkomende investering zijn.
+    \item UFT is beduidend trager in uitvoer — wat geen ideale situatie is gezien Colruyt Group met zijn IT landschap richting containerization en continuous deployment wil gaan.
+\end{itemize}
+
+De keuze tussen Protractor of Cypress is iets minder evident. Protractor heeft als voordelen dat het meer zekerheid biedt naar de toekomst toe (het wordt ontwikkeld door Google) en dat het iets matuurder is dan Cypress. Cypress, daarentegen, vereist geen ondersteunende software. Bovendien geniet Cypress de voorkeur van het team, onder leiding van Angular coach Kenneth Aerens. De literatuur wees al aan dat de aanvaarding van het gekozen framework van kritisch belang is voor het succes van een project.
+
+Dit geheel aan feiten motiveert het advies om te kiezen voor Cypress als end-to-end testing framework, met Protractor als tweede keuze.
+
+Dit resultaat is niet geheel onverwacht — de nadelen van UFT zijn goed gekend en waren ook de motivatie voor Colruyt Group om andere kandidaten te overwegen.
+
+Toch zijn er nog een aantal openstaande vragen. Eerst en vooral vonden er voor Protractor geen praktijktesten plaats, wat maakt dat dit advies niet met 100\% zekerheid gegeven kan worden. Ten tweede is het niet duidelijk wat de impact was van de verschillende methodes om de randapparaten te simuleren — deze variabelen was idealiter niet aanwezig in de performantietesten. Ten slotte werden de testen uitgevoerd met een live pre-productie backend; het is niet duidelijk of dit een invloed had op de testen, hoewel het de implementatie alleszins bemoeilijkt heeft.
+
+Zij die dit onderzoek willen gebruiken als basis voor hun eigen vergelijkende studie wordt afgeraden om te werken met de productiesoftware. De complexiteiten die daarmee gepaard gaan — in dit geval interfacing met randapparaten, een gedeelde databank, afhankelijkheden met andere systemen, eventuele moeilijkheden met licenties en security etc. — leiden af van de kern van het onderzoek. In de plaats daarvan wordt het aangeraden een minimaal prototype van de applicatie te werken zodat deze externe factoren uitgeschakeld kunnen worden.

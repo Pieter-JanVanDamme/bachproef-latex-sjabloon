@@ -41,22 +41,24 @@ Tijdens de performantietesten wordt gebruik gemaakt van Windows \textsuperscript
 
 \begin{enumerate}
     \item \emph{Elapsed Time}: de verlopen tijd sinds het starten van het proces, in seconden.
-    \item \emph{\% Processor Time}: het aandeel van de verlopen tijd die de processor aan de processen besteed (\cite{Tarra2014}).
+    \item \emph{\% Processor Time}: het aandeel van de verlopen tijd die de processor aan de processen besteed (\cite{Tarra2014}). Merk op dat in multi-core computers het maximale aandeel gelijk is aan \( n \cdot 100\% \) met n als het aantal kernen.
     \item \emph{Private Bytes}: de totale hoeveelheid geheugen dat aan de processen gealloceerd wordt, in bytes (\cite{Hudek2017}).
-    \item \emph{Virtual Bytes}: de totale hoeveelheid geheugen die effectief door de processen benut wordt, in bytes (\cite{Hudek2017}).
     \item \emph{Thread Count}: het aantal processor threads die door de processen gebruikt worden (\cite{Satran2018}).
     \item \emph{Handle Count}: het aantal toegangen tot systeembronnen die de processen vasthouden.
 \end{enumerate}
 
 %% Gebruik van PerfMon:
 %% 1. Run... perfmon.exe
-%% 2. Ga naar Monitoring Tools > Performance Monitor en voeg counters toe, alsook instances van processen
+%% 2. Zorg dat de testen runnen zodat je toegang hebt tot de application instances
 %% 3. Rechtsklik op Performance Monitor New > Data Collector Set
-%% 4. Rechtsklik op Data Collector Sets > User Defined > [YourDataCollectorSet] en klik Start om opname te starten
-%% 5. Idem, maar Stop om te stoppen
-%% 6. Open cmd.exe
-%% 7. Gebruik cd om naar de directory van [YourDataCollectorSet] te gaan
-%% 8. Zet .blg naar .csv om met commando 'relog MyMonitorLog.blg -f csv -o MyMonitorLog.csv'
+%% 4. Kies 'create manually' en voeg counters toe + instances van processen
+%% 5. Rechtsklik op Data Collector Sets > User Defined > [YourDataCollectorSet] en klik Start om opname te starten
+%% 6. Idem, maar Stop om te stoppen
+%% 7. Open cmd.exe
+%% 8. Gebruik cd om naar de directory van [YourDataCollectorSet] te gaan
+%% 9. Zet .blg naar .csv om met commando 'relog MyMonitorLog.blg -f csv -o MyMonitorLog.csv'
+
+%% Bron ivm % processortijd in multi-cores: https://serverfault.com/questions/143208/how-can-a-perfmon-processor-time-counter-be-over-100
 
 De gedetailleerde resultaten van deze testen zijn te vinden in bijlage \ref{ch:resultaten} en worden vervolgens onderworpen aan statistische analyse in sectie \ref{sec:analyse-performantietesten}. In sectie \ref{sec:resultaten-requirements} wordt vervolgens besproken in welke mate de frameworks onderling aan de in sectie \ref{sec:meth-requirements} vooropgestelde requirements voldoen.
 
@@ -82,8 +84,10 @@ De requirementsanalyse is een vast onderdeel voor een vergelijkende studie. De v
 
 \textbf{Niet-functionele requirements}:
 \begin{itemize}
-    \item \emph{Moet} (relatief) goedkoop zijn in zowel opzet als onderhoud
-    \item \emph{Moet} voldoende performant zijn om een groot aantal testen snel te kunnen verwerken
+    \item \emph{Moet} (relatief) goedkoop zijn in zowel opzet als onderhoud.
+    \item \emph{Moet} voldoende performant zijn om een groot aantal testen snel te kunnen verwerken, dit omdat Colruyt Group wil evolueren naar containerization en continuous deployment als pilaren voor zijn ICT beleid.
     \item \emph{Moet} een (relatief) vlakke leercurve hebben.
     \item Blijft in de toekomst \emph{idealiter} ondersteund door de ontwikkelaar\footnote{Colruyt Group maakte tot voor kort uitgebreid gebruik van de programmeertaal ObjectStar, die intussen niet meer ondersteund was. Het herschrijven van alle applicaties en systeem die gebruikt maakten van ObjectStar was een enorme kost die Colruyt niet opnieuw wil maken.}
 \end{itemize}
+
+Aan elk van deze vereisten wordt een beoordeling gekoppeld die wordt meegenomen in het finale advies.

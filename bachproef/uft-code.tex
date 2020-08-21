@@ -12,7 +12,100 @@ linenos,
 breaklines
 ]
 {JavaScript}
-// ToDo: copy-paste some code :-)
+Option Explicit
+
+'Initiate Test Execution
+Call func_TestExecutionInitialize()
+
+'Begin Stored Procedure
+Call RunSP("BEGIN")
+
+'Login to MTAC
+Call func_MTACLogin(Trim(DataTable.Value("TACID")))
+
+'Validate Error Without providing Operator ID
+If g_OperatorID_Edit.Exist(1) Then
+g_OperatorID_Edit.Set ""
+Call func_ClickObject(g_KeyPad_OK_Btn)
+If g_EmptyOperatorErr_Elm.Exist(1) Then
+Call UpdateReport("'Verplicht in te vullen.' Available for Empty Operator ID","Pass")
+Else
+Call UpdateReport("'Verplicht in te vullen.' Not-Available for Empty Operator ID","Fail")
+End If
+Else
+Call UpdateReport("User Unable to Find OperatorID_Edit Box","Fail")
+g_TCExecutionTag=False
+End If
+
+'Login to CTAC with Invalid Operator
+Call func_CTACLogin(Trim(DataTable.Value("Invalid_Operator_ID")))
+
+'Check for Error PopUp
+If func_CheckPopUpAlert("Operator "&Trim(DataTable.Value("Invalid_Operator_ID"))&" onbekend") Then
+func_ClickObject(g_PopUpSluiten_Btn)
+Else
+g_TCExecutionTag=False
+End If
+'If Not func_ValidatePopUpString("Error","Operator "&Trim(DataTable.Value("Invalid_Operator_ID"))&" onbekend") Then
+'	g_TCExecutionTag=False
+'End If
+
+'Login to CTAC with Butchery Operator
+Call func_CTACLogin(Trim(DataTable.Value("ButcheryOperator_ID")))
+
+'Check for Error PopUp
+If func_CheckPopUpAlert("Operator "&Trim(DataTable.Value("ButcheryOperator_ID"))&" onbekend") Then
+func_ClickObject(g_PopUpSluiten_Btn)
+Else
+g_TCExecutionTag=False
+End If
+
+'If Not func_ValidatePopUpString("Error","Operator "&Trim(DataTable.Value("ButcheryOperator_ID"))&" onbekend") Then
+'	g_TCExecutionTag=False
+'End If
+
+'Login as CTAC Operator
+Call func_CTACLogin(Trim(DataTable.Value("OperatorID")))
+
+'#####################################
+'#####################################
+If g_NewRek_Btn.Exist(1) Then
+g_NewRek_Btn.click
+End If
+'#####################################
+'#####################################
+
+'Validate CTC View and Available Options
+Call func_ValidataCTACView()
+
+'Capture Rekening Num 
+Call func_CaptureRekeningNum()
+
+'Add Article
+'Call func_AddArticle("SCANBARCODE",Trim(DataTable.Value("HandScanBarCode")),Trim(DataTable.Value("BarCode_Quantity")))
+Call func_AddArticle("SCANBARCODE",Trim(DataTable.Value("HandScanBarcode")),"")
+
+'Close CTAC
+Call func_CloseCTAC()
+
+'C-TAC Stored Procedure
+Call RunSP("CTAC")
+
+''Login to PTAC with Valid ID
+'Call func_PTACLogin(Trim(DataTable.Value("OperatorID")))
+
+
+''Validate PTAC View and Available Options
+'Call func_ValidatePTACView()
+
+'Perform Payment
+Call func_PaymentValidations("CASH",Trim(DataTable.Value("Cash")))
+
+'P-TAC Stored Procedure
+Call RunSP("PTAC")
+
+'Close the Test Execution
+Call func_TestExecutionClosure()
 \end{minted}
 
 \section{Artikel Toevoegen}
@@ -22,7 +115,115 @@ linenos,
 breaklines
 ]
 {JavaScript}
-// ToDo: copy-paste some code :-)
+Option Explicit
+
+'Initiate Test Execution
+Call func_TestExecutionInitialize()
+'Begin Stored Procedure
+Call RunSP("BEGIN")
+'Login to MTAC
+Call func_MTACLogin(Trim(DataTable.Value("TACID")))
+'Login as CTAC Operator
+Call func_CTACLogin(Trim(DataTable.Value("OperatorID")))
+'##################################
+If g_NewRek_Btn.Exist(1) Then
+g_NewRek_Btn.click
+End If
+'##################################
+'Capture Rekening Num 
+Call func_CaptureRekeningNum()
+
+'Register Factur Functie Article.								-->			5410426000808
+Call func_AddArticle("SCANBARCODE",Trim(DataTable.Value("HandScanBarcode")),"")
+'Add invoice card												-->			8102501001102111
+Call func_ScanAndCheckCardName(Trim(DataTable.Value("InvoiceBarcode1")),g_InvoiceKaartText)
+
+'  Register Collishop Article (In Scope in Colruyt_Be only)
+IF g_TestSetName = "AUTOMATION_COLRUYT_BE" Then
+'	Call func_AddArticle("SCANBARCODE",Trim(DataTable.Value("CardBarcode1")),"")		'--->		0152783000370023970150814083
+Call func_EnterHandScanValue(Trim(DataTable.Value("CardBarcode1")))
+IF g_ArticleSet_Elm.Exist(1) Then
+'		If Trim(g_ArticleSet_Elm.GetRoProperty("innertext") = "Set 1/3.*") Then
+If Trim(g_ArticleSet_Elm.GetRoProperty("innertext")) = "Set: 1/3" Then
+Call UpdateReport("Collishop article updated with 1/3","Done")
+Else
+Call UpdateReport("ArticleSet value Not-Updated with 1/3","Fail")
+End If
+
+'		Call func_AddArticle("SCANBARCODE",Trim(DataTable.Value("CardBarcode1")),"")	'--->		0152783000370023970150814083
+Call func_EnterHandScanValue(Trim(DataTable.Value("CardBarcode1")))
+'		If Trim(g_ArticleSet_Elm.GetRoProperty("innertext") = "Set 2/3.*")	Then
+If Trim(g_ArticleSet_Elm.GetRoProperty("innertext")) = "Set: 2/3"	Then
+Call UpdateReport("Collishop article updated with 2/3","Done")
+Else
+Call UpdateReport("ArticleSet value Not-Updated with 2/3","Fail")
+End If
+
+'		Call func_AddArticle("SCANBARCODE",Trim(DataTable.Value("CardBarcode1")),"")	'--->		0152783000370023970150814083
+Call func_EnterHandScanValue(Trim(DataTable.Value("CardBarcode1")))
+'		If Trim(g_ArticleSet_Elm.GetRoProperty("innertext") = "Set 3/3.*") Then
+If Instr(1,g_ArticleSet_Elm.GetRoProperty("innertext"),"Set: 3/3 VOLLEDIG")>0 Then
+Call UpdateReport("Collishop article updated with 'Set: 3/3 VOLLEDIG'","Done")
+Else
+Call UpdateReport("ArticleSet value Not-Updated with 'Set: 3/3 VOLLEDIG","Fail")
+End If
+End  IF
+End  IF
+'Register Parking Article.												--->		25402
+Call func_AddArticle("ARTICLEID",Trim(DataTable.Value("Article1_ID")),"")
+
+'Register Home Delivery Articles.										--->		240321 , 1,00
+g_EmptyPrice = True
+g_UnitPrice = Trim(DataTable.Value("UnitPrice2"))
+Call func_AddArticle("ARTICLEID",Trim(DataTable.Value("Article2_ID")),"")
+g_EmptyPrice = False
+
+
+'Register Guarantee label article.										--->		1212038131426345
+Call func_AddArticle("SCANBARCODE",Trim(DataTable.Value("CardBarcode2")),"")
+
+'Register an article with Empties.										--->		5006 , 1
+Call func_AddArticle("ARTICLEID",Trim(DataTable.Value("Article3_ID")),"")
+
+
+'Register an Pre-Packed Article.										--->		96210000101214011445
+If g_TestSetName <> "AUTOMATION_DREAMLAND" Then
+'Call func_AddArticle("SCANBARCODE",Trim(DataTable.Value("HandScanBarcode2")),"")
+Call func_RegisterArtcleFromScanner(Trim(DataTable.Value("HandScanBarcode2")))
+End If	
+
+'Register an Gift List HWL Article.(In Scope of Colruyt Be)
+IF g_TestSetName = "AUTOMATION_COLRUYT_BE" Then
+'	Call func_AddArticle("SCANBARCODE",Trim(DataTable.Value("HandScanBarcode3")),"")	'--->		0182793133134011970399370600
+Call func_EnterHandScanValue(Trim(DataTable.Value("HandScanBarcode3")))
+'handle popup text Voorafbetaalde reservatie kan je niet combineren met andere transacties. Maak nieuw kasticket with sluiten button
+Call func_CheckPopUpAlert("Voorafbetaalde reservatie kan je niet combineren met andere transacties. Maak nieuw kasticket.")
+Call func_ClickObject(g_PopUpSluiten_Btn)
+End  IF
+
+'Close CTAC
+Call func_CloseCTAC()
+'C-TAC Stored Procedure
+Call RunSP("CTAC")
+
+'payment with Xenta
+Call func_PaymentValidations("Xenta","SALDO")
+Select Case g_TestSetName
+Case "AUTOMATION_COLRUYT_BE"
+Call func_YomaniSimulatorSelection(15)
+'		Window("YomaniSimulator_Window").WinComboBox("ComboBox").Select 15
+Case "AUTOMATION_DREAMLAND","AUTOMATION_SPAR"
+Call func_YomaniSimulatorSelection(16)
+'		Window("YomaniSimulator_Window").WinComboBox("ComboBox").Select 16
+End Select
+'Window("YomaniSimulator_Window").WinButton("Result").Click
+
+
+'P-TAC Stored Procedure
+Call RunSP("PTAC")
+
+'Close the Test Execution
+Call func_TestExecutionClosure()
 \end{minted}
 
 \section{Handscanner Gebruiken}
@@ -32,7 +233,160 @@ linenos,
 breaklines
 ]
 {JavaScript}
-// ToDo: copy-paste some code :-)
+Option Explicit
+
+'Initiate Test Execution
+Call func_TestExecutionInitialize()
+
+'Begin Stored Procedure
+Call RunSP("BEGIN")
+
+'Login to MTAC
+Call func_MTACLogin(Trim(DataTable.Value("TACID")))
+
+'Login as CTAC Operator
+Call func_CTACLogin(Trim(DataTable.Value("OperatorID")))
+
+'##################################
+If g_NewRek_Btn.Exist(1) Then
+g_NewRek_Btn.click
+End If
+'##################################
+
+'Capture Rekening Num 
+Call func_CaptureRekeningNum()
+
+'Add Article1
+Call func_AddArticle("SCANBARCODE",Trim(DataTable.Value("HandScanBarcode")),"")
+'Add same article identically as above
+Call func_AddArticle("SCANBARCODE",Trim(DataTable.Value("HandScanBarcode")),"")
+If g_PerUnit_Elm.Exist(1) Then
+If Instr(1,g_PerUnit_Elm.GetRoProperty("innertext"),"(2)")> 0 Then
+Call UpdateReport("Quantity Value loaded as 2","Pass")
+Else
+Call UpdateReport("Quantity Value Not-Loaded as 2. Actual_Value:"&Trim(g_PerUnit_Elm.GetRoProperty("innertext")),"Fail")
+End If
+Else
+'Close CTAC
+Call func_CloseCTAC()
+g_TCExecutionTag=False
+End If
+'
+'clear verkblack as per new TAC
+'If g_TestSetName<>"AUTOMATION_SPAR" Then
+Call func_RegisterCurrentArticle()
+'End If
+'
+
+'Add Article3 manually 
+Call func_AddArticle("MANUALBARCODE",Trim(DataTable.Value("ManualBarcode")),Trim(DataTable.Value("Barcode_Quantity")))
+
+
+'Add Article4 as blocked article --- 
+Call func_AddArticle("ARTICLEID",Trim(DataTable.Value("Article1_ID")),Trim(DataTable.Value("Quantity1")))
+
+'Blocked article error popup Artikel 5005 geblokkeerd ! Artikel niet verkopen and click on suilten
+
+Call func_CheckPopUpAlert(g_5005BlockText)
+Call func_ClickObject(g_PopUpSluiten_Btn)
+
+
+
+
+'Click on ArticlInr Button
+Call func_ClickObject(g_Artikelnr_Btn)
+If Not g_ArticleID_Edit.Exist(2) Then
+Call UpdateReport("Article_ID EditBox is Not-Available","Fail")
+'Close CTAC
+Call func_CloseCTAC()
+g_TCExecutionTag=False
+Else
+g_ArticleID_Edit.Click
+End If
+
+Call func_ClickOnKeypad("1234567")
+If Len(Trim(g_ArticleID_Edit.GetRoProperty("value")))=6 Then
+Call UpdateReport("User Can enter only 6-Digits at max in Article_ID EditBox","Pass")
+ElseIf Len(Trim(g_ArticleID_Edit.GetRoProperty("value")))>6 Then
+Call UpdateReport("Article_ID EditBox value exceeds 6-Digits","Fail")
+Else
+Call UpdateReport("Article_ID EditBox value not reach 6-Digits. Actual_Lenght:"&Len(Trim(g_ArticleID_Edit.GetRoProperty("value"))),"Fail")
+End If
+
+
+'Enter Valid Article ID
+Call func_EnterKeyPadVal(Trim(DataTable.Value("Article2_ID")),g_ArticleID_Edit,"YES")
+
+Call func_SyncForObject(g_AddArticleQuantity_Edit,2)
+
+Call func_EnterKeyPadVal("0",g_AddArticleQuantity_Edit,"YES")
+
+'Get error message ,""Hoeveelheid mag niet 0 zijn, hoeveelheid invullen !"
+
+Call func_CheckPopUpAlert(g_ZeroquantityText)
+Call func_ClickObject(g_PopUpSluiten_Btn)
+
+
+
+'Give quzntity as 99999
+'Call funct_ClickObject(g_ArticleID_Edit)
+'Call func_ClickOnKeypad("99999")
+'Call func_EnterKeyPadVal("99999",g_AddArticleQuantity_Edit,"YES")
+g_AddArticleQuantity_Edit.Click
+Call func_ClickOnKeypad("99999")
+If Len(Trim(g_AddArticleQuantity_Edit.GetRoProperty("value")))=4 Then
+Call UpdateReport("User Can enter only 4-Digits at max in quantity EditBox","Pass")
+ElseIf Len(Trim(g_AddArticleQuantity_Edit.GetRoProperty("value")))>4 Then
+Call UpdateReport("Quantity EditBox value exceeds 4-Digits","Fail")
+Else
+Call UpdateReport("Quantity  EditBox value not reach 4-Digits. Actual_Lenght:"&Len(Trim(g_ArticleID_Edit.GetRoProperty("value"))),"Fail")
+End If
+
+
+'Give quantity as 9999 
+Call func_EnterKeyPadVal("9999",g_AddArticleQuantity_Edit,"YES")
+
+
+'Get error message when scan 9999 as quantity'"Maximum hoeveelheid = 1000"
+
+Call func_CheckPopUpAlert(g_MaxquantityText)
+Call func_ClickObject(g_PopUpSluiten_Btn)
+
+'Enter Valid Quantity
+
+Call func_EnterKeyPadVal(Trim(DataTable.Value("Quantity2")),g_AddArticleQuantity_Edit,"YES")
+
+
+
+'Close CTAC
+Call func_CloseCTAC()
+
+'Remove blocked article text should come 
+
+Call func_CheckPopUpAlert(g_5005BlockText)
+Call func_ClickObject(g_PopUpSluiten_Btn)
+
+'Remove blocked article
+
+Call func_DeleteArticle("REGISTERED",4) 
+
+'Close CTAC
+Call func_CloseCTAC()
+
+'C-TAC Stored Procedure
+Call RunSP("CTAC")
+
+'Login to PTAC with Valid ID
+'Call func_PTACLogin(Trim(DataTable.Value("OperatorID")))
+
+'Perform Payment
+Call func_PaymentValidations("CASH",Trim(DataTable.Value("Cash")))
+
+'P-TAC Stored Procedure
+Call RunSP("PTAC")
+
+'Close the Test Execution
+Call func_TestExecutionClosure()
 \end{minted}
 
 \section{Factuur Maken}
@@ -42,7 +396,66 @@ linenos,
 breaklines
 ]
 {JavaScript}
-// ToDo: copy-paste some code :-)
+Option Explicit
+
+'Initiate Test Execution
+Call func_TestExecutionInitialize()
+'Login to MTAC
+Call func_MTACLogin(Trim(DataTable.Value("TACID")))
+'Login to CTAC 
+Call func_CTACLogin(Trim(DataTable.Value("OperatorID")))
+'##################################
+If g_NewRek_Btn.Exist(1) Then
+g_NewRek_Btn.click
+End If
+'##################################
+'Begin Stored Procedure
+Call RunSP("BEGIN")
+'Capture Rekening Num 
+Call func_CaptureRekeningNum()
+
+'	Add Article1													--->	5001 , 1
+Call func_AddArticle("ARTICLEID",Trim(DataTable.Value("Article1_ID")),Trim(DataTable.Value("Quantity1")))
+'	Click Factuur Button
+Call func_ClickObject(g_Factuur_Btn)
+'	Enter BTW Number & Invalid Country Code							--->	BE , FR
+Call func_SearchForInvoiceCustomer("VAT","BE","FR","")
+Call func_ClickObject(g_KeyPad_OK_Btn)
+'	Validate Field Error for Invalid OND Num
+Call func_ValidateFieldError(g_InvalidVATNumText)
+
+g_Barrel_Edit.Set "BE"
+g_CountryCode_Edit.Set "BE"
+
+'Call func_CheckPopUpAlert(g_NoCustomerFoundText & g_VATNumText&":BE" & g_CountryCodeText&":FR" & g_ReturnToChooseNewCustomerText)
+'Call func_ClickObject(g_PopUpTerug_Btn)
+'	Provide Valida BTW Num											--->	FR2639950530 , FR
+Call func_SearchForInvoiceCustomer("VAT",Trim(DataTable.Value("Text1")),"FR","")
+Call func_ClickObject(g_KeyPad_OK_Btn)			
+Call func_SelectCustomerFromResult(Trim(DataTable.Value("Text2")),"")	'	--->	PETER
+Call func_ClickObject(g_KeyPad_OK_Btn)
+If g_BarCode_Edit.Exist(1) Then
+If (Replace(g_BarCode_Edit.GetRoProperty("value")," ","") = Replace(g_InvoiceText," ","")) Then
+Call UpdateReport("CardName Display EditBox_Value from WorkArea Updated with Expected Value -- "&g_InvoiceText,"Pass")
+Else
+Call UpdateReport("CardName Display EditBox_Value from WorkArea Not-Updated with Expected Value -- "&g_InvoiceText& "  ActualValue--"& Trim(g_BarCode_Edit.GetRoProperty("value")),"Fail")
+End If
+Else
+Call UpdateReport("User Unable to Find CardName Display EditBox from WorkArea","Fail")
+End If
+
+'	Close CTAC
+Call func_CloseCTAC()
+'	C-TAC Stored Procedure
+Call RunSP("CTAC")
+
+'	Perform CASH Payement --> Close CASH Drawer
+Call func_PaymentValidations("CASH",Trim(DataTable.Value("Cash")))
+'P-TAC Stored Procedure
+Call RunSP("PTAC")
+
+'Close the Test Execution
+Call func_TestExecutionClosure()
 \end{minted}
 
 \section{Betaling Registreren}
@@ -52,5 +465,101 @@ linenos,
 breaklines
 ]
 {JavaScript}
-// ToDo: copy-paste some code :-)
+Option Explicit 
+
+'Step 1: Login to CTAC .
+
+'Initiate Test Execution
+Call func_TestExecutionInitialize()
+'Begin Stored Procedure
+Call RunSP("BEGIN")
+'Login to MTAC
+Call func_MTACLogin(Trim(DataTable.Value("TACID")))
+'Login as CTAC Operator
+Call func_CTACLogin(Trim(DataTable.Value("OperatorID")))
+'##################################
+If g_NewRek_Btn.Exist(1) Then
+g_NewRek_Btn.click
+End If
+'##################################
+'Capture Rekening Num 
+Call func_CaptureRekeningNum()
+
+'	Add Article1																	--->		27064 , 1
+Call func_AddArticle("ARTICLEID",Trim(DataTable.Value("Article1_ID")),Trim(DataTable.Value("Quantity1")))
+
+'	Close CTAC
+Call func_CloseCTAC()
+'	C-TAC Stored Procedure
+Call RunSP("CTAC")
+
+
+'	Perform Payment by XTRA-Amount1													--->		2,00
+'Call func_PaymentValidations("MPAY",DataTable.Value("Cash"))
+
+Call func_ClickObject(g_Mpay_Btn)
+Call func_SyncForObject(g_CashAmount_Edit,2)
+g_CashAmount_Edit.Click
+Call func_ClickOnKeypad(Trim(DataTable.Value("Cash")))
+g_KeyPad_OK_Btn.Click
+
+'Call func_ClickObject(g_Mpay_Btn)
+'Call func_EnterKeyPadVal(DataTable.Value("Cash"),g_CashAmount_Edit,"YES")
+'	Delete MPay from WorkArea 
+Call func_ClickObject(g_CashPaymentClear_Btn)
+'Wait 1
+Call func_SyncForObject( g_PopUp_Elm , 20)
+'	Validate PopUp & Select Ga Verder
+Call func_CheckPopUpAlert(Replace(g_NoResponsePaymentText,"PaymentMode","Mpay")&g_CheckPayOnPhoneOrHelpDeskText)
+Call func_ClickObject(g_PopUpGaVerder_Btn)
+'	Validate PopUp & Select 'De betaling is NEIT doorgegaan' -->
+Call func_CheckAvailablePopUpOptions(g_PaymentContinueText&"---"&g_PaymentNotContinueText,"YES")
+Call func_SelectPopUpOption(g_PaymentNotContinueText)
+
+If g_Bedrag_Elm.Exist(1) And g_CashAmount_Edit.Exist(1) And g_CashPaymentClear_Btn.Exist(1) And g_Saldo_Btn.Exist(1) Then
+Call UpdateReport("Work Area Updated with All Required options for Not making Payment in 'MPay' Mode","Pass")
+Else
+Call UpdateReport("Work Area Not-Updated with All Required options for Not making Payment in 'MPay' Mode","Fail")
+g_TCExecutionTag=False
+End If
+
+Call func_ClickObject(g_CashPaymentClear_Btn)
+
+
+'	Perform Payment by XTRA-Amount1													--->		2,00
+'Call func_PaymentValidations("MPAY",DataTable.Value("Cash"))
+'Call func_EnterKeyPadVal(DataTable.Value("Cash"),g_CashAmount_Edit,"YES")
+Call func_ClickObject(g_Mpay_Btn)
+Call func_SyncForObject(g_CashAmount_Edit,2)
+g_CashAmount_Edit.Click
+Call func_ClickOnKeypad(Trim(DataTable.Value("Cash")))
+'Call func_ClickObject(Browser("Tac2_Browser").Page("Tac2_Page").WebElement("KeyPad_Elm").WebButton("KeyPad_OK_Btn"))
+g_KeyPad_OK_Btn.Click
+
+'Call func_EnterKeyPadVal(DataTable.Value("Cash"),g_CashAmount_Edit,"YES")
+'	Delete MPay from WorkArea 
+Call func_ClickObject(g_CashPaymentClear_Btn)
+'Wait 1
+Call func_SyncForObject( g_PopUp_Elm , 20)
+
+'	Validate PopUp & Select Ga Verder
+Call func_CheckPopUpAlert(Replace(g_NoResponsePaymentText,"PaymentMode","Mpay")&g_CheckPayOnPhoneOrHelpDeskText)
+Call func_ClickObject(g_PopUpGaVerder_Btn)
+'	Validate PopUp & Select 'De betaling is doorgegaan' -->
+Call func_CheckAvailablePopUpOptions(g_PaymentContinueText&"---"&g_PaymentNotContinueText,"YES")
+Call func_SelectPopUpOption(g_PaymentContinueText)
+If Not(g_Bedrag_Elm.Exist(1) And g_CashAmount_Edit.Exist(1) And g_CashPaymentClear_Btn.Exist(1) And g_Saldo_Btn.Exist(1)) Then
+Call UpdateReport("Work Area Updated properly for making Payment in 'MPay' Mode","Pass")
+Else
+Call UpdateReport("Work Area Not-Updated properly for making Payment in 'MPay' Mode","Fail")
+g_TCExecutionTag=False
+End If
+
+' Perform MPay-SALDO Payment --> Close Cash Drawer 
+Call func_PaymentValidations("MPAY","SALDO")
+
+'P-TAC Stored Procedure
+Call RunSP("PTAC")
+'Close the Test Execution
+Call func_TestExecutionClosure()
 \end{minted}
